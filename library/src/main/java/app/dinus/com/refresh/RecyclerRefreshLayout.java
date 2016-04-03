@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 
 /**
+ * NOTE: the class based on the {@link android.support.v4.widget.SwipeRefreshLayout} source code
+ *
  * The RecyclerRefreshLayout should be used whenever the user can refresh the
  * contents of a view via a vertical swipe gesture. The activity that
  * instantiates this view should add an OnRefreshListener to be notified
@@ -48,7 +50,7 @@ public class RecyclerRefreshLayout extends ViewGroup
     private static final int INVALID_POINTER = -1;
     //the default height of the RefreshView
     private static final int DEFAULT_REFRESH_SIZE_DP = 30;
-    //the animation duration of the RefreshView scroll to the refresh point or the start poinit
+    //the animation duration of the RefreshView scroll to the refresh point or the start point
     private static final int DEFAULT_ANIMATE_DURATION = 200;
     // the threshold of the trigger to refresh
     private static final int DEFAULT_REFRESH_TARGET_OFFSET_DP = 50;
@@ -151,6 +153,12 @@ public class RecyclerRefreshLayout extends ViewGroup
         addView(mRefreshStateView, layoutParams);
     }
 
+    /**
+     * Note
+     * @param refreshView must implements the interface IRefreshStatus
+     * @param layoutParams the with is always the match_parent， no matter how you set
+     *                     the height you need to set a specific value
+     */
     public void setRefreshView(View refreshView, LayoutParams layoutParams) {
         if (mRefreshView == refreshView) {
             return;
@@ -341,10 +349,11 @@ public class RecyclerRefreshLayout extends ViewGroup
             mRefreshStateView.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
         }
 
-        int offsetTop = 0;
-        if (mRefreshTargetOffset > mRefreshView.getHeight()) {
-            offsetTop = (int) -(mRefreshTargetOffset - (mRefreshTargetOffset - mRefreshView.getMeasuredHeight()) / 2);
+        if (mRefreshTargetOffset < mRefreshView.getHeight()) {
+            mRefreshTargetOffset = mRefreshView.getHeight();
         }
+
+        int offsetTop = (int) -(mRefreshTargetOffset - (mRefreshTargetOffset - mRefreshView.getMeasuredHeight()) / 2);
 
         mRefreshView.layout((width / 2 - mRefreshView.getMeasuredWidth() / 2), offsetTop,
                 (width / 2 + mRefreshView.getMeasuredWidth() / 2), offsetTop + mRefreshView.getMeasuredHeight());
@@ -367,8 +376,8 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mTarget.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth() - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(getMeasuredHeight() - getPaddingTop() - getPaddingBottom(), MeasureSpec.EXACTLY));
-        mRefreshView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        mRefreshView.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth() - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(mRefreshView.getLayoutParams().height, MeasureSpec.EXACTLY));
 
         mRefreshViewIndex = -1;
         for (int index = 0; index < getChildCount(); index++) {
@@ -650,8 +659,6 @@ public class RecyclerRefreshLayout extends ViewGroup
             mRefreshView.setVisibility(View.VISIBLE);
         }
 
-        mIRefreshStatus.pullProgress(overScrollTop, overScrollTop / mRefreshTargetOffset);
-
         if (overScrollTop > mRefreshTargetOffset && !mIsFitRefreshing) {
             mIsFitRefreshing = true;
             mIRefreshStatus.pullToRefresh();
@@ -686,6 +693,8 @@ public class RecyclerRefreshLayout extends ViewGroup
         mRefreshView.bringToFront();
         scrollBy(offsetX, offsetY);
         mCurrentScrollOffset = getScrollY();
+
+        mIRefreshStatus.pullProgress(-mCurrentScrollOffset, -mCurrentScrollOffset / mRefreshTargetOffset);
     }
 
     private float getMotionEventY(MotionEvent ev, int activePointerId) {

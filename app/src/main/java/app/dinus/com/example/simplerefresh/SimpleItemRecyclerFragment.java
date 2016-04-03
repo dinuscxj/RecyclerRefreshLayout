@@ -33,6 +33,10 @@ public class SimpleItemRecyclerFragment extends SimpleRecyclerFragment<ItemModel
         super.onViewCreated(view, savedInstanceState);
         getOriginAdapter().setItemList(mItemList);
         getHeaderAdapter().notifyDataSetChanged();
+
+        // the simple use of RecyclerRefreshLayout.setRefreshView(View, LayoutParams);
+//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150);
+//        findRecyclerRefreshLayout().setRefreshView(new SimpleRefreshView(getActivity()), layoutParams);
     }
 
     @NonNull
