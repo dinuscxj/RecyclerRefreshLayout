@@ -1,5 +1,7 @@
 
 ## RecyclerRefreshLayout
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerRefreshLayout-green.svg?style=true)](https://android-arsenal.com/details/1/3383)
+
 Using RecyclerRefreshLayout requires two steps:<br/>
 * Step one: use the RecyclerRefreshLayout in XML<br/>
 * Step two: call the function setOnRefreshListener<br/>

@@ -53,11 +53,14 @@ public class RefreshView extends ImageView implements IRefreshStatus {
     @Override
     public void reset() {
         clearAnimation();
+
         this.setImageDrawable(getResources().getDrawable(R.drawable.default_ptr_flip));
     }
 
     @Override
     public void refreshing() {
+        clearAnimation();
+
         AnimationDrawable drawable = (AnimationDrawable) getResources().getDrawable(R.drawable.spinner);
         drawable.start();
         this.setImageDrawable(drawable);
@@ -65,6 +68,8 @@ public class RefreshView extends ImageView implements IRefreshStatus {
 
     @Override
     public void pullToRefresh() {
+        clearAnimation();
+
         if (getAnimation() == null || getAnimation() == mResetRotateAnimation) {
             startAnimation(mRotateAnimation);
         }
@@ -72,6 +77,8 @@ public class RefreshView extends ImageView implements IRefreshStatus {
 
     @Override
     public void releaseToRefresh() {
+        clearAnimation();
+
         if (mRotateAnimation == getAnimation()) {
             startAnimation(mResetRotateAnimation);
         }

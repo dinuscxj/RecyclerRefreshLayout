@@ -16,6 +16,6 @@ public interface IRefreshStatus {
     //refreshView is released into the refresh point
     void releaseToRefresh();
 
-    //the drop-down progress of the refreshView
+    //the drop-down progress of the refreshView and the pullProgress may be more than 1.0f
     void pullProgress(float pullDistance, float pullProgress);
 }
