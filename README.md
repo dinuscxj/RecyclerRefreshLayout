@@ -8,8 +8,9 @@ Using RecyclerRefreshLayout requires two steps:<br/>
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayout.gif?width=300)<br/>
 
 ## Features
- * Custom refresh components: setRefreshView(View, LayoutParams);
- * Custom refresh state components: setRefreshStateView(View);
+ * Support all the views.
+ * Custom refresh components: setRefreshView(View, LayoutParams).
+ * Custom refresh state components: setRefreshStateView(View).
 
 ## Usage
  ``` xml

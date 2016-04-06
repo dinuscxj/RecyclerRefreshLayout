@@ -739,10 +739,6 @@ public class RecyclerRefreshLayout extends ViewGroup
                     break;
                 }
             }
-
-            if (mTarget instanceof ListView || mTarget instanceof GridView || mTarget instanceof ScrollView) {
-                throw new UnsupportedOperationException("unSupport the Deprecated ScrollingView " + mTarget.getClass());
-            }
         }
     }
 
