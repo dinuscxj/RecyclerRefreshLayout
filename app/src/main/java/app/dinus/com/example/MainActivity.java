@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.simple_refresh:
                 SimpleRefreshActivity.startActivity(this);
                 break;
+            default:
+                break;
         }
     }
 }

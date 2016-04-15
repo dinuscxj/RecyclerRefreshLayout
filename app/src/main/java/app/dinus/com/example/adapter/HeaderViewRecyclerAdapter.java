@@ -7,16 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter{
   private static final int BASE_HEADER_VIEW_TYPE = -1 << 10;
   private static final int BASE_FOOTER_VIEW_TYPE = -1 << 11;
 
-  private final ArrayList<FixedViewInfo> EMPTY_HEADER_INFO_LIST = new ArrayList<>();
-  private final ArrayList<FixedViewInfo> EMPTY_FOOTER_INFO_LIST = new ArrayList<>();
+  private final List<FixedViewInfo> EMPTY_HEADER_INFO_LIST = new ArrayList<>();
+  private final List<FixedViewInfo> EMPTY_FOOTER_INFO_LIST = new ArrayList<>();
 
-  private final ArrayList<FixedViewInfo> mHeaderViewInfoList;
-  private final ArrayList<FixedViewInfo> mFooterViewInfoList;
+  private final List<FixedViewInfo> mHeaderViewInfoList;
+  private final List<FixedViewInfo> mFooterViewInfoList;
 
   private final RecyclerView.Adapter mAdapter;
 
@@ -27,8 +28,8 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter{
   }
 
   public HeaderViewRecyclerAdapter(RecyclerView.Adapter adapter,
-                                   ArrayList<FixedViewInfo> headerViewInfoList,
-                                   ArrayList<FixedViewInfo> footerViewInfoList) {
+                                   List<FixedViewInfo> headerViewInfoList,
+                                   List<FixedViewInfo> footerViewInfoList) {
     this.mAdapter = adapter;
 
     if (headerViewInfoList == null) {

@@ -93,6 +93,61 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private Interpolator mInterpolator;
 
+    private Animation mAnimateToRefreshingAnimation = new Animation() {
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            int targetEnd = (int) mRefreshTargetOffset;
+            int targetTop = (int) (mFrom + (targetEnd - mFrom) * interpolatedTime);
+
+            scrollTargetOffset(0, -mCurrentScrollOffset - targetTop);
+        }
+    };
+
+    private Animation mAnimateToStartAnimation = new Animation() {
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            int targetEnd = 0;
+            int targetTop = (int) (mFrom + (targetEnd - mFrom) * interpolatedTime);
+
+            scrollTargetOffset(0, -mCurrentScrollOffset - targetTop);
+        }
+    };
+
+    private Animation.AnimationListener mRefreshingListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            mIRefreshStatus.refreshing();
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if (mNotify) {
+                if (mOnRefreshListener != null) {
+                    mOnRefreshListener.onRefresh();
+                }
+            }
+        }
+    };
+
+    private Animation.AnimationListener mResetListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            mIRefreshStatus.reset();
+        }
+    };
+
     public RecyclerRefreshLayout(Context context) {
         this(context, null);
     }
@@ -438,6 +493,8 @@ public class RecyclerRefreshLayout extends ViewGroup
                 mIsBeingDragged = false;
                 mActivePointerId = INVALID_POINTER;
                 break;
+            default:
+                break;
         }
 
         return mIsBeingDragged;
@@ -524,6 +581,8 @@ public class RecyclerRefreshLayout extends ViewGroup
                 finishSpinner(overScrollTop);
                 return false;
             }
+            default:
+                break;
         }
 
         return true;
@@ -587,61 +646,6 @@ public class RecyclerRefreshLayout extends ViewGroup
         mRefreshView.clearAnimation();
         mRefreshView.startAnimation(mAnimateToRefreshingAnimation);
     }
-
-    private Animation mAnimateToRefreshingAnimation = new Animation() {
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            int targetEnd = (int) mRefreshTargetOffset;
-            int targetTop = (int) (mFrom + (targetEnd - mFrom) * interpolatedTime);
-
-            scrollTargetOffset(0, -mCurrentScrollOffset - targetTop);
-        }
-    };
-
-    private Animation mAnimateToStartAnimation = new Animation() {
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            int targetEnd = 0;
-            int targetTop = (int) (mFrom + (targetEnd - mFrom) * interpolatedTime);
-
-            scrollTargetOffset(0, -mCurrentScrollOffset - targetTop);
-        }
-    };
-
-    private Animation.AnimationListener mRefreshingListener = new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-            mIRefreshStatus.refreshing();
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            if (mNotify) {
-                if (mOnRefreshListener != null) {
-                    mOnRefreshListener.onRefresh();
-                }
-            }
-        }
-    };
-
-    private Animation.AnimationListener mResetListener = new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            mIRefreshStatus.reset();
-        }
-    };
 
     private void moveSpinner(float overScrollTop) {
         float originalDragPercent = overScrollTop / mRefreshTargetOffset;
