@@ -105,8 +105,8 @@ public class SimpleItemRecyclerFragment extends SimpleRecyclerFragment<ItemModel
     }
 
     private class ItemViewHolder extends RecyclerListAdapter.ViewHolder<ItemModel> {
-        private TextView mTvTitle;
-        private TextView mTvContent;
+        private final TextView mTvTitle;
+        private final TextView mTvContent;
 
         public ItemViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(getActivity()).inflate(R.layout.simple_list_item, parent, false));

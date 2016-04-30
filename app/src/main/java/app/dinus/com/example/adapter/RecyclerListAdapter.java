@@ -10,8 +10,8 @@ import java.util.HashMap;
 public abstract class RecyclerListAdapter<T, VH extends RecyclerListAdapter.ViewHolder<T>> extends BaseRecyclerListAdapter<T, VH> {
   public static final int UNKNOWN_VIEW_TYPE = Integer.MIN_VALUE;
 
-  private HashMap<Class<?>, Integer> mViewHolderTypeRegistry = new HashMap<>();
-  private HashMap<Integer, ViewHolderFactory> mViewHolderFactoryRegistry = new HashMap<>();
+  private final HashMap<Class<?>, Integer> mViewHolderTypeRegistry = new HashMap<>();
+  private final HashMap<Integer, ViewHolderFactory> mViewHolderFactoryRegistry = new HashMap<>();
 
   public <F> void addViewType(Class<? extends F> clazz, ViewHolderFactory<? extends ViewHolder<? extends F>> factory) {
     int id = mViewHolderFactoryRegistry.size();
