@@ -29,8 +29,8 @@ public abstract class SimpleRecyclerFragment<MODEL extends CursorModel> extends 
 
   private InteractionListener mInteractionListener;
 
-  private RefreshEventDetector mRefreshEventDetector = new RefreshEventDetector();
-  private AutoLoadEventDetector mAutoLoadEventDetector = new AutoLoadEventDetector();
+  private final RefreshEventDetector mRefreshEventDetector = new RefreshEventDetector();
+  private final AutoLoadEventDetector mAutoLoadEventDetector = new AutoLoadEventDetector();
 
   @Nullable
   @Override

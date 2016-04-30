@@ -5,10 +5,10 @@ import android.text.TextUtils;
 public class ItemModel implements CursorModel{
     public static final String MORE_CURSOR = "more_cursor";
 
-    private String mCursor;
+    private final String mCursor;
 
-    private String mTitle;
-    private String mContent;
+    private final String mTitle;
+    private final String mContent;
 
     public ItemModel(String mTitle, String mContent) {
         this.mCursor = MORE_CURSOR;

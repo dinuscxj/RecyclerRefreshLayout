@@ -93,7 +93,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private Interpolator mInterpolator;
 
-    private Animation mAnimateToRefreshingAnimation = new Animation() {
+    private final Animation mAnimateToRefreshingAnimation = new Animation() {
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             int targetEnd = (int) mRefreshTargetOffset;
@@ -103,7 +103,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
     };
 
-    private Animation mAnimateToStartAnimation = new Animation() {
+    private final Animation mAnimateToStartAnimation = new Animation() {
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             int targetEnd = 0;
@@ -113,7 +113,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
     };
 
-    private Animation.AnimationListener mRefreshingListener = new Animation.AnimationListener() {
+    private final Animation.AnimationListener mRefreshingListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
             mIRefreshStatus.refreshing();
@@ -133,7 +133,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
     };
 
-    private Animation.AnimationListener mResetListener = new Animation.AnimationListener() {
+    private final Animation.AnimationListener mResetListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
         }
