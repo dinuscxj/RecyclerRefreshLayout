@@ -1,6 +1,7 @@
 package app.dinus.com.example;
 
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;

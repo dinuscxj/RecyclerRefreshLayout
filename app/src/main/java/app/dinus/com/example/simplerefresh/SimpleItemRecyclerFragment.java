@@ -62,11 +62,13 @@ public class SimpleItemRecyclerFragment extends SimpleRecyclerFragment<ItemModel
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mItemList.clear();
-                        mItemList.addAll(responseItemList());
-                        getHeaderAdapter().notifyDataSetChanged();
+                        if (isAdded()) {
+                            mItemList.clear();
+                            mItemList.addAll(responseItemList());
+                            getHeaderAdapter().notifyDataSetChanged();
 
-                        requestComplete();
+                            requestComplete();
+                        }
                     }
                 }, REQUEST_DURATION);
             }
@@ -76,14 +78,16 @@ public class SimpleItemRecyclerFragment extends SimpleRecyclerFragment<ItemModel
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mItemList.addAll(responseItemList());
-                        if (mItemList.size() > MAX_ITEM_COUNT) {
-                            mItemList.add(new ItemModel(getString(R.string.no_more),
-                                    getString(R.string.no_more), null));
-                        }
-                        getHeaderAdapter().notifyDataSetChanged();
+                        if (isAdded()) {
+                            mItemList.addAll(responseItemList());
+                            if (mItemList.size() > MAX_ITEM_COUNT) {
+                                mItemList.add(new ItemModel(getString(R.string.no_more),
+                                        getString(R.string.no_more), null));
+                            }
+                            getHeaderAdapter().notifyDataSetChanged();
 
-                        requestComplete();
+                            requestComplete();
+                        }
                     }
                 }, REQUEST_DURATION);
             }
