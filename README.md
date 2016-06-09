@@ -13,6 +13,14 @@ Using RecyclerRefreshLayout requires two steps:<br/>
  * Custom refresh state components: setRefreshStateView(View).
 
 ## Usage
+ Add dependency
+ ```gradle
+ dependencies {
+    compile 'com.dinuscxj:recyclerrefreshlayout:1.0.0'
+ }
+ ```
+
+ Used in Xml
  ``` xml
  <?xml version="1.0" encoding="utf-8"?>
  <app.dinus.com.refresh.RecyclerRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,6 +34,7 @@ Using RecyclerRefreshLayout requires two steps:<br/>
  </app.dinus.com.refresh.RecyclerRefreshLayout>
  ```
 
+ Used in Java
  ```java
  mRecyclerRefreshLayout.setOnRefreshListener(OnRefreshListener);
  ```
