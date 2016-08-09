@@ -1,5 +1,6 @@
 package com.dinuscxj.refresh;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
@@ -9,6 +10,7 @@ import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -35,9 +37,7 @@ import android.widget.AbsListView;
  * progress animation, call setEnabled(false) on the view.
  * <p>
  * Maybe you need a custom refresh components, can be implemented by call
- * the function {@link #setRefreshView(View, LayoutParams)},
- * you may also need to define the refresh status control components,
- * can be implemented by call the function {@link #setRefreshStateView(View)}
+ * the function {@link #setRefreshView(View, LayoutParams)}
  * </p>
  */
 public class RecyclerRefreshLayout extends ViewGroup
@@ -83,7 +83,6 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private View mTarget;
     private View mRefreshView;
-    private View mRefreshStateView;
 
     private IRefreshStatus mIRefreshStatus;
     private OnRefreshListener mOnRefreshListener;
@@ -105,7 +104,6 @@ public class RecyclerRefreshLayout extends ViewGroup
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             int targetEnd = 0;
             int targetTop = (int) (mFrom + (targetEnd - mFrom) * interpolatedTime);
-
             scrollTargetOffset(0, -mCurrentScrollOffset - targetTop);
         }
     };
@@ -165,7 +163,6 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         setWillNotDraw(false);
         onCreateRefreshView();
-        onCreateRefreshStateView();
         setNestedScrollingEnabled(true);
         ViewCompat.setChildrenDrawingOrderEnabled(this, true);
     }
@@ -181,28 +178,6 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, mSpinnerSize);
         addView(mRefreshView, layoutParams);
-    }
-
-    protected void onCreateRefreshStateView() {
-        if (mRefreshStateView == null) {
-            return;
-        }
-
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        addView(mRefreshStateView, layoutParams);
-    }
-
-    public void setRefreshStateView(View refreshStateView) {
-        if (mRefreshStateView == refreshStateView) {
-            return;
-        }
-
-        if (mRefreshStateView != null && mRefreshStateView.getParent() != null) {
-            ((ViewGroup) mRefreshStateView.getParent()).removeView(mRefreshStateView);
-        }
-
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        addView(mRefreshStateView, layoutParams);
     }
 
     /**
@@ -397,10 +372,6 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mTarget.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
 
-        if (mRefreshStateView != null) {
-            mRefreshStateView.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
-        }
-
         if (mRefreshTargetOffset < mRefreshView.getHeight()) {
             mRefreshTargetOffset = mRefreshView.getHeight();
         }
@@ -419,11 +390,6 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
         if (mTarget == null) {
             return;
-        }
-
-        if (mRefreshStateView != null) {
-            mRefreshStateView.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth() - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(getMeasuredHeight() - getPaddingTop() - getPaddingBottom(), MeasureSpec.EXACTLY));
         }
 
         mTarget.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth() - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY),
@@ -448,7 +414,7 @@ public class RecyclerRefreshLayout extends ViewGroup
             return true;
         }
 
-        if (!isEnabled() || mReturningToStart || canChildScrollUp(mTarget) || canChildScrollUp(mRefreshStateView)) {
+        if (!isEnabled() || mReturningToStart || canChildScrollUp(mTarget)) {
             return false;
         }
 
@@ -507,7 +473,7 @@ public class RecyclerRefreshLayout extends ViewGroup
             mReturningToStart = false;
         }
 
-        if (!isEnabled() || mReturningToStart || canChildScrollUp(mTarget) || canChildScrollUp(mRefreshStateView)) {
+        if (!isEnabled() || mReturningToStart || canChildScrollUp(mTarget)) {
             return false;
         }
 
@@ -625,8 +591,8 @@ public class RecyclerRefreshLayout extends ViewGroup
         if (listener != null) {
             mAnimateToStartAnimation.setAnimationListener(listener);
         }
-        mRefreshView.clearAnimation();
-        mRefreshView.startAnimation(mAnimateToStartAnimation);
+        clearAnimation();
+        startAnimation(mAnimateToStartAnimation);
     }
 
     private void animateToRefreshingPosition(int from, Animation.AnimationListener listener) {
@@ -640,8 +606,8 @@ public class RecyclerRefreshLayout extends ViewGroup
             mAnimateToRefreshingAnimation.setAnimationListener(listener);
         }
 
-        mRefreshView.clearAnimation();
-        mRefreshView.startAnimation(mAnimateToRefreshingAnimation);
+        clearAnimation();
+        startAnimation(mAnimateToRefreshingAnimation);
     }
 
     private void moveSpinner(float overScrollTop) {
@@ -735,7 +701,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         if (mTarget == null) {
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
-                if (!child.equals(mRefreshView) && !child.equals(mRefreshStateView)) {
+                if (!child.equals(mRefreshView)) {
                     mTarget = child;
                     break;
                 }
