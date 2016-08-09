@@ -1,6 +1,5 @@
 package com.dinuscxj.refresh;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
@@ -10,7 +9,6 @@ import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -23,7 +21,7 @@ import android.widget.AbsListView;
 
 /**
  * NOTE: the class based on the {@link android.support.v4.widget.SwipeRefreshLayout} source code
- *
+ * <p>
  * The RecyclerRefreshLayout should be used whenever the user can refresh the
  * contents of a view via a vertical swipe gesture. The activity that
  * instantiates this view should add an OnRefreshListener to be notified
@@ -88,6 +86,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     private OnRefreshListener mOnRefreshListener;
 
     private Interpolator mInterpolator;
+
+    private boolean mIsTargetValid;
 
     private final Animation mAnimateToRefreshingAnimation = new Animation() {
         @Override
@@ -182,7 +182,8 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     /**
      * Note
-     * @param refreshView must implements the interface IRefreshStatus
+     *
+     * @param refreshView  must implements the interface IRefreshStatus
      * @param layoutParams the with is always the match_parent， no matter how you set
      *                     the height you need to set a specific value
      */
@@ -356,9 +357,8 @@ public class RecyclerRefreshLayout extends ViewGroup
         if (getChildCount() == 0) {
             return;
         }
-        if (mTarget == null) {
-            ensureTarget();
-        }
+
+        ensureTarget();
         if (mTarget == null) {
             return;
         }
@@ -385,9 +385,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (mTarget == null) {
-            ensureTarget();
-        }
+
+        ensureTarget();
         if (mTarget == null) {
             return;
         }
@@ -409,6 +408,9 @@ public class RecyclerRefreshLayout extends ViewGroup
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         ensureTarget();
+        if (mTarget == null) {
+            return false;
+        }
 
         if (mRefreshing) {
             return true;
@@ -465,6 +467,11 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        ensureTarget();
+        if (mTarget == null) {
+            return false;
+        }
+
         if (mRefreshing) {
             return true;
         }
@@ -698,15 +705,38 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void ensureTarget() {
-        if (mTarget == null) {
+        if (mTarget == null || !mIsTargetValid) {
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
                 if (!child.equals(mRefreshView)) {
                     mTarget = child;
+                    mIsTargetValid = true;
                     break;
                 }
             }
         }
+    }
+
+    @Override
+    public void removeAllViews() {
+        mIsTargetValid = false;
+        super.removeAllViews();
+    }
+
+    @Override
+    public void removeView(View view) {
+        if (view == mTarget) {
+            mIsTargetValid = false;
+        }
+        super.removeView(view);
+    }
+
+    @Override
+    public void removeViewAt(int index) {
+        if (getChildAt(index) == mTarget) {
+            mIsTargetValid = false;
+        }
+        super.removeViewAt(index);
     }
 
     public void setOnRefreshListener(OnRefreshListener listener) {
