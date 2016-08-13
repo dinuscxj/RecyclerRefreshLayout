@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/refresh_first"
+        android:orderInCategory="100"
+        android:title="simulate first refresh"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/refresh_failure"
+        android:orderInCategory="100"
+        android:title="simulate refresh failure"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/refresh_no_data"
+        android:orderInCategory="100"
+        android:title="simulate refresh no data"
+        app:showAsAction="never" />
+
+</menu>

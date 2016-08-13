@@ -43,6 +43,10 @@ Using RecyclerRefreshLayout requires two steps:<br/>
  mRecyclerRefreshLayout.setRefreshStateView(View);
  mRecyclerRefreshLayout.setRefreshView(View, LayoutParams);
  ```
+ 
+## Misc
+  ***QQ Group:*** **342748245**
+  
 ## License
     Copyright 2015-2019 dinus
 

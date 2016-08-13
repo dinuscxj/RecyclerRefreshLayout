@@ -8,18 +8,14 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.dinuscxj.example.MainActivity"
-            android:label="@string/label_main">
+            android:name=".demo.OpenProjectRefreshActivity"
+            android:label="@string/label_refresh">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.dinuscxj.example.simplerefresh.SimpleRefreshActivity"
-            android:label="@string/label_refresh"/>
     </application>
 
 </manifest>

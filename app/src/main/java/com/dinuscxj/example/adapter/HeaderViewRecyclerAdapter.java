@@ -112,7 +112,7 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter{
     return mAdapter == null || mAdapter.getItemCount() == 0;
   }
 
-  public boolean removeHeader(View v) {
+  public boolean removeHeaderView(View v) {
     for (int i = 0; i < mHeaderViewInfoList.size(); i++) {
       FixedViewInfo info = mHeaderViewInfoList.get(i);
       if (info.view == v) {
@@ -125,7 +125,7 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter{
     return false;
   }
 
-  public boolean removeFooter(View v) {
+  public boolean removeFooterView(View v) {
     for (int i = 0; i < mFooterViewInfoList.size(); i++) {
       FixedViewInfo info = mFooterViewInfoList.get(i);
       if (info.view == v) {
@@ -136,6 +136,20 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter{
     }
 
     return false;
+  }
+
+  public void removeAllHeaderView() {
+    if (!mHeaderViewInfoList.isEmpty()) {
+      mHeaderViewInfoList.clear();
+      notifyDataSetChanged();
+    }
+  }
+
+  public void removeAllFooterView() {
+    if (!mFooterViewInfoList.isEmpty()) {
+      mFooterViewInfoList.clear();
+      notifyDataSetChanged();
+    }
   }
 
   public void addHeaderView(View view) {

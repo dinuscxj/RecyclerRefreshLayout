@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
+
+
+  <ImageView
+    android:id="@+id/icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:scaleType="centerInside"
+    android:src="@drawable/icon_face_sad"/>
+
+  <TextView
+    android:id="@+id/description"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:text="Please check your net connection"
+    android:textColor="#ff888888"
+    android:textSize="12sp"/>
+
+  <TextView
+    android:id="@+id/retry_btn"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/bg_retry"
+    android:gravity="center"
+    android:paddingBottom="4dp"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp"
+    android:paddingTop="4dp"
+    android:text="Retry"
+    android:textColor="@android:color/white"
+    android:textSize="13sp"/>
+
+</LinearLayout>

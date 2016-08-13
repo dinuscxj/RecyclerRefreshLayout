@@ -87,8 +87,6 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private Interpolator mInterpolator;
 
-    private boolean mIsTargetValid;
-
     private final Animation mAnimateToRefreshingAnimation = new Animation() {
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -705,38 +703,25 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void ensureTarget() {
-        if (mTarget == null || !mIsTargetValid) {
+        if (!isTargetValid()) {
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
                 if (!child.equals(mRefreshView)) {
                     mTarget = child;
-                    mIsTargetValid = true;
                     break;
                 }
             }
         }
     }
 
-    @Override
-    public void removeAllViews() {
-        mIsTargetValid = false;
-        super.removeAllViews();
-    }
-
-    @Override
-    public void removeView(View view) {
-        if (view == mTarget) {
-            mIsTargetValid = false;
+    public boolean isTargetValid() {
+        for (int i = 0; i < getChildCount(); i++) {
+            if (mTarget == getChildAt(i)) {
+                return true;
+            }
         }
-        super.removeView(view);
-    }
 
-    @Override
-    public void removeViewAt(int index) {
-        if (getChildAt(index) == mTarget) {
-            mIsTargetValid = false;
-        }
-        super.removeViewAt(index);
+        return false;
     }
 
     public void setOnRefreshListener(OnRefreshListener listener) {
