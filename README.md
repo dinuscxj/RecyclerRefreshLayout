@@ -5,7 +5,9 @@
 Using RecyclerRefreshLayout requires two steps:<br/>
 * Step one: use the RecyclerRefreshLayout in XML<br/>
 * Step two: call the function setOnRefreshListener<br/>
-![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayout.gif?width=300)<br/>
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNormal.gif?width=300)<br/>
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNoData.gif?width=300)<br/>
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutFailure.gif?width=300)<br/>
 
 ## Features
  * Support all the views.
@@ -16,7 +18,7 @@ Using RecyclerRefreshLayout requires two steps:<br/>
  Add dependency
  ```gradle
  dependencies {
-    compile 'com.dinuscxj:recyclerrefreshlayout:1.0.0'
+    compile 'com.dinuscxj:recyclerrefreshlayout:1.0.1'
  }
  ```
 
