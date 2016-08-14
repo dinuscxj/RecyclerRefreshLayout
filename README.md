@@ -11,7 +11,7 @@ Using RecyclerRefreshLayout requires two steps:<br/>
 
 ## Features
  * Support all the views.
- * Custom refresh components: setRefreshView(View, LayoutParams).
+ * Custom refresh components: setRefreshView(View, LayoutParams). The View must implements IRefreshStatus.
  * Custom refresh state components: [tips] (https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/tips).
 
 ## Usage
@@ -36,9 +36,13 @@ Using RecyclerRefreshLayout requires two steps:<br/>
  </app.dinus.com.refresh.RecyclerRefreshLayout>
  ```
 
- Used in Java 
+ Used in Java
+ ```java
+ mRecyclerRefreshLayout.setOnRefreshListener(OnRefreshListener);
+ ```
+
+ May be you need to custom your refresh view
  ```java 
- mRecyclerRefreshLayout.setRefreshStateView(View);
  mRecyclerRefreshLayout.setRefreshView(View, LayoutParams);
  ```
  
