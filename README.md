@@ -45,26 +45,27 @@ Using RecyclerRefreshLayout requires two steps:<br/>
  You can add a Refresh View (need to implements IRefreshStatus) to RecyclerRefreshLayout to implement any UI effect you want.
  ```java
  public interface IRefreshStatus {
-    /**
-     * When the content view has reached top and refresh has been completed, view will be reset.
-     */
-    void reset();
-    /**
-     * Refresh View is refreshing
-     */
-    void refreshing();
-    /**
-     * Refresh View is dropped down to the refresh point
-     */
-    void pullToRefresh();
-    /**
-     * Refresh View is released into the refresh point
-     */
-    void releaseToRefresh();
-    /**
-     * The drop-down progress of the refresh View and the pullProgress may be more than 1.0f
-     */
-    void pullProgress(float pullDistance, float pullProgress);
+   /**
+    * When the content view has reached top and refresh has been completed, view will be reset.
+    */
+   void reset();
+   /**
+    * Refresh View is refreshing
+    */
+   void refreshing();
+   /**
+    * Refresh View is dropped down to the refresh point
+    */
+   void pullToRefresh();
+   /**
+    * Refresh View is released into the refresh point
+    */
+   void releaseToRefresh();
+   /**
+    * @param pullDistance The drop-down distance of the refresh View
+    * @param pullProgress The drop-down progress of the refresh View and the pullProgress may be more than 1.0f
+    */
+   void pullProgress(float pullDistance, float pullProgress);
  }
  ```
  
