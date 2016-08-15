@@ -2,15 +2,25 @@
 ## RecyclerRefreshLayout
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerRefreshLayout-green.svg?style=true)](https://android-arsenal.com/details/1/3383)
 
-Using RecyclerRefreshLayout requires two steps:<br/>
-* Step one: use the RecyclerRefreshLayout in XML<br/>
-* Step two: call the function setOnRefreshListener<br/>
+ `RecyclerRefreshLayout` based on the {@link android.support.v4.widget.SwipeRefreshLayout}
+ The `RecyclerRefreshLayout` should be used whenever the user can refresh the
+ contents of a `view` via a vertical swipe gesture. The `activity` that
+ instantiates this view should add an `OnRefreshListener` to be notified
+ whenever the swipe to refresh gesture is completed. The `RecyclerRefreshLayout`
+ will notify the listener each and every time the gesture is completed again;
+ the listener is responsible for correctly determining when to actually
+ initiate a refresh of its content. If the listener determines there should
+ not be a refresh, it must call `setRefreshing(false)` to cancel any visual
+ indication of a refresh. If an `activity` wishes to show just the progress
+ animation, it should call `setRefreshing(true)`. To disable the gesture and
+ progress animation, call `setEnabled(false)` on the `view`.
+ 
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNormal.gif?width=300)
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNoData.gif?width=300)
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutFailure.gif?width=300)<br/>
 
 ## Features
- * Support all the views.
+ * Supports all of the views: ListView, GridView, ScrollView, FrameLayout, or Even a single TextView.
  * Custom refresh view: setRefreshView(View, LayoutParams). The View must implements IRefreshStatus.
  * Custom refresh tips: [tips] (https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/tips).
 
