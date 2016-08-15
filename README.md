@@ -20,8 +20,8 @@
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutFailure.gif?width=300)<br/>
 
 ## Features
- * Supports all of the views: ListView, GridView, ScrollView, FrameLayout, or Even a single TextView.
- * Custom refresh view: setRefreshView(View, LayoutParams). The View must implements IRefreshStatus.
+ * Supports all of the views: `ListView`, `GridView`, `ScrollView`, `FrameLayout`, or Even a single `TextView`.
+ * Custom refresh view: You can customize a `View` and implements `IRefreshStatus`. And then call the method `setRefreshView(View, LayoutParams)`. 
  * Custom refresh tips: [tips] (https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/tips).
 
 ## Usage
@@ -32,7 +32,7 @@
  }
  ```
 
- Used in Xml
+ Config in xml
  ``` xml
  <?xml version="1.0" encoding="utf-8"?>
  <com.dinuscxj.refresh.RecyclerRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -46,13 +46,13 @@
  </app.dinus.com.refresh.RecyclerRefreshLayout>
  ```
 
- Set the OnRefreshListener in Java
+ Set the `OnRefreshListener` in java
  ```java
  mRecyclerRefreshLayout.setOnRefreshListener(OnRefreshListener);
  ```
  
 ## Customize
- You can add a Refresh View (need to implements IRefreshStatus) to RecyclerRefreshLayout to implement any UI effect you want.
+ You can add a refresh view (need to implements `IRefreshStatus`) to `RecyclerRefreshLayout` to implement any UI effect you want.
  ```java
  public interface IRefreshStatus {
    /**
