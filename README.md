@@ -11,8 +11,8 @@ Using RecyclerRefreshLayout requires two steps:<br/>
 
 ## Features
  * Support all the views.
- * Custom refresh components: setRefreshView(View, LayoutParams). The View must implements IRefreshStatus.
- * Custom refresh state components: [tips] (https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/tips).
+ * Custom refresh view: setRefreshView(View, LayoutParams). The View must implements IRefreshStatus.
+ * Custom refresh tips: [tips] (https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/tips).
 
 ## Usage
  Add dependency
@@ -36,15 +36,43 @@ Using RecyclerRefreshLayout requires two steps:<br/>
  </app.dinus.com.refresh.RecyclerRefreshLayout>
  ```
 
- Used in Java
+ Set the OnRefreshListener in Java
  ```java
  mRecyclerRefreshLayout.setOnRefreshListener(OnRefreshListener);
  ```
-
- May be you need to custom your refresh view
+ 
+## Customize
+ You can add a Refresh View (need to implements IRefreshStatus) to RecyclerRefreshLayout to implement any UI effect you want.
+ ```java
+ public interface IRefreshStatus {
+    /**
+     * When the content view has reached top and refresh has been completed, view will be reset.
+     */
+    void reset();
+    /**
+     * Refresh View is refreshing
+     */
+    void refreshing();
+    /**
+     * Refresh View is dropped down to the refresh point
+     */
+    void pullToRefresh();
+    /**
+     * Refresh View is released into the refresh point
+     */
+    void releaseToRefresh();
+    /**
+     * The drop-down progress of the refresh View and the pullProgress may be more than 1.0f
+     */
+    void pullProgress(float pullDistance, float pullProgress);
+ }
+ ```
+ 
+ Set the refresh view
  ```java 
  mRecyclerRefreshLayout.setRefreshView(View, LayoutParams);
  ```
+ If necessary, Maybe you need to reference [RefreshViewEg](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/demo/RefreshViewEg) 
  
 ## Misc
   ***QQ Group:*** **342748245**
