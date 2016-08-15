@@ -73,7 +73,7 @@ Using RecyclerRefreshLayout requires two steps:<br/>
  ```java 
  mRecyclerRefreshLayout.setRefreshView(View, LayoutParams);
  ```
- If necessary, Maybe you need to reference [RefreshViewEg](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/demo/RefreshViewEg) 
+ If necessary, Maybe you need to reference [RefreshViewEg](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/demo/RefreshViewEg.java) 
  
 ## Misc
   ***QQ Group:*** **342748245**
