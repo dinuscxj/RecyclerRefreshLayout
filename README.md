@@ -2,7 +2,7 @@
 ## RecyclerRefreshLayout
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerRefreshLayout-green.svg?style=true)](https://android-arsenal.com/details/1/3383)
 
- `RecyclerRefreshLayout` based on the {@link android.support.v4.widget.SwipeRefreshLayout}
+ [RecyclerRefreshLayout](https://github.com/dinuscxj/RecyclerRefreshLayout) based on the {@link android.support.v4.widget.SwipeRefreshLayout}
  The `RecyclerRefreshLayout` should be used whenever the user can refresh the
  contents of a `view` via a vertical swipe gesture. The `activity` that
  instantiates this view should add an `OnRefreshListener` to be notified
