@@ -138,6 +138,8 @@ public class RecyclerRefreshLayout extends ViewGroup
         @Override
         public void onAnimationEnd(Animation animation) {
             mIRefreshStatus.reset();
+            mRefreshing = false;
+            mReturningToStart = false;
         }
     };
 
@@ -410,11 +412,11 @@ public class RecyclerRefreshLayout extends ViewGroup
             return false;
         }
 
-        if (mRefreshing) {
+        if (mRefreshing || mReturningToStart) {
             return true;
         }
 
-        if (!isEnabled() || mReturningToStart || canChildScrollUp(mTarget)) {
+        if (!isEnabled() || canChildScrollUp(mTarget)) {
             return false;
         }
 
@@ -470,15 +472,11 @@ public class RecyclerRefreshLayout extends ViewGroup
             return false;
         }
 
-        if (mRefreshing) {
+        if (mRefreshing || mReturningToStart) {
             return true;
         }
 
-        if (mReturningToStart && ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mReturningToStart = false;
-        }
-
-        if (!isEnabled() || mReturningToStart || canChildScrollUp(mTarget)) {
+        if (!isEnabled() || canChildScrollUp(mTarget)) {
             return false;
         }
 
@@ -643,6 +641,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void finishSpinner(float overScrollTop) {
+        mReturningToStart = true;
+
         if (overScrollTop > mRefreshTargetOffset) {
             setRefreshing(true, true);
         } else {
