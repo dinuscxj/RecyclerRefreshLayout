@@ -93,7 +93,7 @@ public class OpenProjectRecyclerFragment extends RecyclerFragment<OpenProjectMod
 
     @Override
     protected RecyclerView.LayoutManager onCreateLayoutManager() {
-        return new GridLayoutManager(getActivity(), 1);
+        return new GridLayoutManager(getActivity(), 2);
     }
 
     @Override

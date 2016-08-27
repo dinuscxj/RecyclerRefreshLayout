@@ -64,6 +64,7 @@ public abstract class RecyclerFragment<MODEL extends CursorModel> extends Fragme
     mOriginAdapter = createAdapter();
     mHeaderAdapter = new HeaderViewRecyclerAdapter(mOriginAdapter);
     mRecyclerView.setAdapter(mHeaderAdapter);
+    mHeaderAdapter.adjustSpanSize(mRecyclerView);
   }
 
   private void initRecyclerRefreshLayout(View view) {
