@@ -28,7 +28,7 @@
  Add dependency
  ```gradle
  dependencies {
-    compile 'com.dinuscxj:recyclerrefreshlayout:1.0.2'
+    compile 'com.dinuscxj:recyclerrefreshlayout:1.0.3'
  }
  ```
 
@@ -52,7 +52,7 @@
  ```
  
 ## Customize
- You can add a refresh view (need to implements `IRefreshStatus`) to `RecyclerRefreshLayout` to implement any UI effect you want.
+ You can set a refresh view (need to implements `IRefreshStatus`) to `RecyclerRefreshLayout` to implement any UI effect you want.
  ```java
  public interface IRefreshStatus {
    /**
@@ -78,13 +78,28 @@
    void pullProgress(float pullDistance, float pullProgress);
  }
  ```
- 
- Set the refresh view
  ```java 
- mRecyclerRefreshLayout.setRefreshView(View, LayoutParams);
+ RecyclerRefreshLayout.setRefreshView(View, LayoutParams);
  ```
- If necessary, Maybe you need to reference [RefreshViewEg](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/demo/RefreshViewEg.java) 
- 
+ If necessary, Maybe you need to reference [RefreshView](https://github.com/dinuscxj/RecyclerRefreshLayout/blob/master/recyclerrefreshlayout/src/main/java/com/dinuscxj/refresh/RefreshView.java) or [RefreshViewEg](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/demo/RefreshViewEg.java) 
+
+ Besides, you can set a drag distance converter (need to implements `IDragDistanceConverter`) to `RecyclerRefreshLayout` to implement drag effect you want.
+ ```java
+ public interface IDragDistanceConverter {
+     /**
+      * @param scrollDistance the distance between the ACTION_DOWN point and the ACTION_MOVE point
+      * @param refreshDistance the distance between the refresh point and the initialize point
+      * @return the real distance of the refresh view moved
+      */
+     float convert(float scrollDistance, float refreshDistance);
+ }
+ ```
+ ```java
+ RecyclerRefreshLayout.setDragDistanceConverter(@NonNull IDragDistanceConverter 
+ ```
+ If necessary, Maybe you need to reference [MaterialDragDistanceConverter](https://github.com/dinuscxj/RecyclerRefreshLayout/blob/master/recyclerrefreshlayout/src/main/java/com/dinuscxj/refresh/MaterialDragDistanceConverter.java) or [DragDistanceConverterEg](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/master/app/src/main/java/com/dinuscxj/example/demo/DragDistanceConverterEg.java) 
+
+
 ## Misc
   ***QQ Group:*** **342748245**
   

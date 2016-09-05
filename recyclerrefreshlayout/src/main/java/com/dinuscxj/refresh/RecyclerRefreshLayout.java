@@ -1,6 +1,7 @@
 package com.dinuscxj.refresh;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
@@ -50,8 +51,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     // the threshold of the trigger to refresh
     private static final int DEFAULT_REFRESH_TARGET_OFFSET_DP = 50;
 
-    private static final float DRAG_RATE = .5f;
-    private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
+    private static final float DRAG_RATE = 0.5f;
+    private static final float DECELERATE_INTERPOLATION_FACTOR = 2.0f;
 
     // NestedScroll
     private float mTotalUnconsumed;
@@ -81,6 +82,8 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private View mTarget;
     private View mRefreshView;
+
+    private IDragDistanceConverter mIDragDistanceConverter;
 
     private IRefreshStatus mIRefreshStatus;
     private OnRefreshListener mOnRefreshListener;
@@ -162,12 +165,13 @@ public class RecyclerRefreshLayout extends ViewGroup
         mNestedScrollingChildHelper = new NestedScrollingChildHelper(this);
 
         setWillNotDraw(false);
-        onCreateRefreshView();
+        initRefreshView();
+        initDragDistanceConverter();
         setNestedScrollingEnabled(true);
         ViewCompat.setChildrenDrawingOrderEnabled(this, true);
     }
 
-    protected void onCreateRefreshView() {
+    private void initRefreshView() {
         mRefreshView = new RefreshView(getContext());
 
         if (mRefreshView instanceof IRefreshStatus) {
@@ -178,6 +182,10 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, mSpinnerSize);
         addView(mRefreshView, layoutParams);
+    }
+
+    private void initDragDistanceConverter() {
+        mIDragDistanceConverter = new MaterialDragDistanceConverter();
     }
 
     /**
@@ -206,6 +214,13 @@ public class RecyclerRefreshLayout extends ViewGroup
         addView(mRefreshView, layoutParams);
     }
 
+    public void setDragDistanceConverter(@NonNull IDragDistanceConverter dragDistanceConverter) {
+        if (dragDistanceConverter == null) {
+            throw new NullPointerException("the dragDistanceConverter can't be null");
+        }
+        this.mIDragDistanceConverter = dragDistanceConverter;
+    }
+
     public void setInterpolator(Interpolator interpolator) {
         mInterpolator = interpolator;
     }
@@ -223,10 +238,10 @@ public class RecyclerRefreshLayout extends ViewGroup
     protected int getChildDrawingOrder(int childCount, int i) {
         if (mRefreshViewIndex < 0) {
             return i;
-        } else if (i == childCount - 1) {
+        } else if (i == 0) {
             return mRefreshViewIndex;
-        } else if (i >= mRefreshViewIndex) {
-            return i + 1;
+        } else if (i <= mRefreshViewIndex) {
+            return i - 1;
         } else {
             return i;
         }
@@ -498,7 +513,7 @@ public class RecyclerRefreshLayout extends ViewGroup
                     return false;
                 }
 
-                final float overScrollY = (activeMoveY - mInitialMotionY) * DRAG_RATE;
+                final float overScrollY = mIDragDistanceConverter.convert(activeMoveY - mInitialMotionY, mRefreshTargetOffset);
 
                 if (mIsBeingDragged) {
                     if (overScrollY > 0) {
@@ -614,17 +629,6 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void moveSpinner(float overScrollTop) {
-        float originalDragPercent = overScrollTop / mRefreshTargetOffset;
-        float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
-        float slingshotDist = mRefreshTargetOffset;
-        float extraOS = Math.abs(overScrollTop) - mRefreshTargetOffset;
-        float tensionSlingshotPercent = Math.max(0, Math.min(extraOS, slingshotDist * 2.5f) / slingshotDist);
-        float tensionPercent = (float) ((tensionSlingshotPercent / 4) -
-                Math.pow((tensionSlingshotPercent / 4), 2)) * 2f;
-        float extraMove = (slingshotDist) * tensionPercent * 2;
-
-        int targetY = (int) ((slingshotDist * dragPercent) + extraMove);
-
         if (mRefreshView.getVisibility() != View.VISIBLE) {
             mRefreshView.setVisibility(View.VISIBLE);
         }
@@ -637,7 +641,7 @@ public class RecyclerRefreshLayout extends ViewGroup
             mIRefreshStatus.releaseToRefresh();
         }
 
-        scrollTargetOffset(0, -mCurrentScrollOffset - targetY);
+        scrollTargetOffset(0, (int) (-mCurrentScrollOffset - overScrollTop));
     }
 
     private void finishSpinner(float overScrollTop) {
@@ -662,7 +666,6 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void scrollTargetOffset(int offsetX, int offsetY) {
-        mRefreshView.bringToFront();
         scrollBy(offsetX, offsetY);
         mCurrentScrollOffset = getScrollY();
 
