@@ -90,8 +90,8 @@ public class OpenProjectRecyclerFragment extends RecyclerFragment<OpenProjectMod
 //        the simple use of RecyclerRefreshLayout.setDragDistanceConverter(IDragDistanceConvertEg);
 //        getRecyclerRefreshLayout().setDragDistanceConverter(new DragDistanceConverterEg());
 //        the simple use of RecyclerRefreshLayout.setRefreshView(View, LayoutParams);
-//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150);
-//        getRecyclerRefreshLayout().setRefreshView(new SimpleRefreshView(getActivity()), layoutParams);
+//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        getRecyclerRefreshLayout().setRefreshView(new RefreshViewEg(getActivity()), layoutParams);
     }
 
     @Override
