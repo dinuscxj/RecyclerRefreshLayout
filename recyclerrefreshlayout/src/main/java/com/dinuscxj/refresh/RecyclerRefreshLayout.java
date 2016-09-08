@@ -10,6 +10,7 @@ import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -247,6 +248,19 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
     }
 
+    @Override
+    public void requestDisallowInterceptTouchEvent(boolean b) {
+        // if this is a List < L or another view that doesn't support nested
+        // scrolling, ignore this request so that the vertical scroll event
+        // isn't stolen
+        if ((android.os.Build.VERSION.SDK_INT < 21 && mTarget instanceof AbsListView)
+                || (mTarget != null && !ViewCompat.isNestedScrollingEnabled(mTarget))) {
+            // Nope.
+        } else {
+            super.requestDisallowInterceptTouchEvent(b);
+        }
+    }
+
     // NestedScrollingParent
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
@@ -295,6 +309,7 @@ public class RecyclerRefreshLayout extends ViewGroup
             finishSpinner(mTotalUnconsumed);
             mTotalUnconsumed = 0;
         }
+
         stopNestedScroll();
     }
 
@@ -306,6 +321,7 @@ public class RecyclerRefreshLayout extends ViewGroup
             mTotalUnconsumed += dyUnconsumed;
             moveSpinner(mTotalUnconsumed);
         }
+
         dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dxConsumed, null);
     }
 
@@ -421,6 +437,22 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        final int action = MotionEventCompat.getActionMasked(ev);
+
+        switch (action) {
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                // support compile sdk version < 23
+                onStopNestedScroll(this);
+                break;
+            default:
+                break;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         ensureTarget();
         if (mTarget == null) {
@@ -513,7 +545,7 @@ public class RecyclerRefreshLayout extends ViewGroup
                     return false;
                 }
 
-                final float overScrollY = mIDragDistanceConverter.convert(activeMoveY - mInitialMotionY, mRefreshTargetOffset);
+                final float overScrollY = activeMoveY - mInitialMotionY;
 
                 if (mIsBeingDragged) {
                     if (overScrollY > 0) {
@@ -629,6 +661,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void moveSpinner(float overScrollTop) {
+        overScrollTop = mIDragDistanceConverter.convert(overScrollTop, mRefreshTargetOffset);
+
         if (mRefreshView.getVisibility() != View.VISIBLE) {
             mRefreshView.setVisibility(View.VISIBLE);
         }
