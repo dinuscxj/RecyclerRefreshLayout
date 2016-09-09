@@ -62,8 +62,8 @@ public class RefreshView extends ImageView implements IRefreshStatus {
         clearAnimation();
 
         AnimationDrawable drawable = (AnimationDrawable) getResources().getDrawable(R.drawable.spinner);
-        drawable.start();
         this.setImageDrawable(drawable);
+        drawable.start();
     }
 
     @Override

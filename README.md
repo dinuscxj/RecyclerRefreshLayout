@@ -28,7 +28,7 @@
  Add dependency
  ```gradle
  dependencies {
-    compile 'com.dinuscxj:recyclerrefreshlayout:1.0.5'
+    compile 'com.dinuscxj:recyclerrefreshlayout:1.0.6'
  }
  ```
 
