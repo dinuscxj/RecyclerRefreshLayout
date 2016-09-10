@@ -1,6 +1,8 @@
 ## RecyclerRefreshLayout
-[English](https://github.com/dinuscxj/RecyclerRefreshLayout) | 中文版<br/>
+
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerRefreshLayout-green.svg?style=true)](https://android-arsenal.com/details/1/3383)
+
+[English](https://github.com/dinuscxj/RecyclerRefreshLayout) | 中文版<br/>
 
 [RecyclerRefreshLayout](https://github.com/dinuscxj/RecyclerRefreshLayout) 
 基于 {@link android.support.v4.widget.SwipeRefreshLayout}
