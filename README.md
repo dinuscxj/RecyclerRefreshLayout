@@ -1,22 +1,22 @@
 ## RecyclerRefreshLayout
-
+English | [中文版](https://github.com/dinuscxj/RecyclerRefreshLayout/blob/master/README-ZH.md)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerRefreshLayout-green.svg?style=true)](https://android-arsenal.com/details/1/3383)
 
 [RecyclerRefreshLayout](https://github.com/dinuscxj/RecyclerRefreshLayout) 
 based on the {@link android.support.v4.widget.SwipeRefreshLayout}
 The `RecyclerRefreshLayout` should be used whenever the user can refresh the
-contents of a `view` via a vertical swipe gesture. The `activity` that
+contents of a `view` via a vertical swipe gesture. The activity that
 instantiates this view should add an `OnRefreshListener` to be notified
 whenever the swipe to refresh gesture is completed. The `RecyclerRefreshLayout`
 will notify the listener each and every time the gesture is completed again;
 the listener is responsible for correctly determining when to actually
 initiate a refresh of its content. If the listener determines there should
 not be a refresh, it must call `setRefreshing(false)` to cancel any visual
-indication of a refresh. If an `activity` wishes to show just the progress
+indication of a refresh. If an activity wishes to show just the progress
 animation, it should call `setRefreshing(true)`. To disable the gesture and
 progress animation, call `setEnabled(false)` on the `view`.
 
-> Note: The RecyclerRefreshLayout supports all of the views: `ListView`, `GridView`, `ScrollView`, `FrameLayout`, or Even a single `TextView`
+> Note: The `RecyclerRefreshLayout` supports all of the views: `ListView`, `GridView`, `ScrollView`, `FrameLayout`, or Even a single `TextView`
   
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNormal.gif?width=300)
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNoData.gif?width=300)
@@ -113,6 +113,7 @@ void releaseToRefresh();
 /**
 * @param pullDistance The drop-down distance of the refresh View
 * @param pullProgress The drop-down progress of the refresh View and the pullProgress may be more than 1.0f
+*                     pullProgress = pullDistance / refreshTargetOffset
 */
 void pullProgress(float pullDistance, float pullProgress);
 }
@@ -127,7 +128,7 @@ Customize a drag distance converter (need to implements `IDragDistanceConverter`
 public interface IDragDistanceConverter {
  /**
   * @param scrollDistance the distance between the ACTION_DOWN point and the ACTION_MOVE point
-  * @param refreshDistance the distance between the refresh point and the initialize point
+  * @param refreshDistance the distance between the refresh point and the start point
   * @return the real distance of the refresh view moved
   */
  float convert(float scrollDistance, float refreshDistance);
