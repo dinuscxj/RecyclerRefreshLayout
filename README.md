@@ -1,5 +1,5 @@
 ## RecyclerRefreshLayout
-English | [中文版](https://github.com/dinuscxj/RecyclerRefreshLayout/blob/master/README-ZH.md)
+English | [中文版](https://github.com/dinuscxj/RecyclerRefreshLayout/blob/master/README-ZH.md)<br/>
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerRefreshLayout-green.svg?style=true)](https://android-arsenal.com/details/1/3383)
 
 [RecyclerRefreshLayout](https://github.com/dinuscxj/RecyclerRefreshLayout) 

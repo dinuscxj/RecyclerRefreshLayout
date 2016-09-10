@@ -1,5 +1,5 @@
 ## RecyclerRefreshLayout
-[English](https://github.com/dinuscxj/RecyclerRefreshLayout) | 中文版
+[English](https://github.com/dinuscxj/RecyclerRefreshLayout) | 中文版<br/>
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerRefreshLayout-green.svg?style=true)](https://android-arsenal.com/details/1/3383)
 
 [RecyclerRefreshLayout](https://github.com/dinuscxj/RecyclerRefreshLayout) 
@@ -28,7 +28,7 @@
 
 ## 用法
 
-#### 在xml配置
+#### 在xml中配置
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <com.dinuscxj.refresh.RecyclerRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
