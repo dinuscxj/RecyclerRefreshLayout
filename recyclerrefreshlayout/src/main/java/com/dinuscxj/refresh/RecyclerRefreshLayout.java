@@ -10,7 +10,6 @@ import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -70,7 +69,8 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private int mRefreshViewIndex = INVALID_INDEX;
     private int mActivePointerId = INVALID_POINTER;
-    private int mAnimateDuration = DEFAULT_ANIMATE_DURATION;
+    private int mAnimateToStartDuration = DEFAULT_ANIMATE_DURATION;
+    private int mAnimateToRefreshDuration = DEFAULT_ANIMATE_DURATION;
 
     private int mFrom;
     private int mTouchSlop;
@@ -89,7 +89,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     private IRefreshStatus mIRefreshStatus;
     private OnRefreshListener mOnRefreshListener;
 
-    private Interpolator mInterpolator;
+    private Interpolator mAnimateToStartInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
+    private Interpolator mAnimateToRefreshInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
 
     private final Animation mAnimateToRefreshingAnimation = new Animation() {
         @Override
@@ -154,8 +155,6 @@ public class RecyclerRefreshLayout extends ViewGroup
     public RecyclerRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-
-        mInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
 
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         mSpinnerSize = (int) (DEFAULT_REFRESH_SIZE_DP * metrics.density);
@@ -222,14 +221,44 @@ public class RecyclerRefreshLayout extends ViewGroup
         this.mIDragDistanceConverter = dragDistanceConverter;
     }
 
-    public void setInterpolator(Interpolator interpolator) {
-        mInterpolator = interpolator;
+    /**
+     * @param animateToStartInterpolator The interpolator used by the animation that
+     *                                   move the refresh view from the refreshing point or
+     *                                   (the release point) to the start point.
+     */
+    public void setAnimateToStartInterpolator(Interpolator animateToStartInterpolator) {
+        mAnimateToStartInterpolator = animateToStartInterpolator;
     }
 
-    public void setAnimateDuration(int duration) {
-        mAnimateDuration = duration;
+
+    /**
+     * @param animateToRefreshInterpolator The interpolator used by the animation that
+     *                                     move the refresh view the release point to the refreshing point.
+     */
+    public void setAnimateToRefreshInterpolator(Interpolator animateToRefreshInterpolator) {
+        mAnimateToRefreshInterpolator = animateToRefreshInterpolator;
     }
 
+    /**
+     * @param animateToStartDuration The duration used by the animation that
+     *                               move the refresh view from the refreshing point or
+     *                               (the release point) to the start point.
+     */
+    public void setAnimateToStartDuration(int animateToStartDuration) {
+        mAnimateToStartDuration = animateToStartDuration;
+    }
+
+    /**
+     * @param animateToRefreshDuration The duration used by the animation that
+     *                                 move the refresh view the release point to the refreshing point.
+     */
+    public void setAnimateToRefreshDuration(int animateToRefreshDuration) {
+        mAnimateToRefreshDuration = animateToRefreshDuration;
+    }
+
+    /**
+     * @param refreshTargetOffset The minimum distance that trigger refresh.
+     */
     public void setRefreshTargetOffset(float refreshTargetOffset) {
         mRefreshTargetOffset = refreshTargetOffset;
         requestLayout();
@@ -601,6 +630,12 @@ public class RecyclerRefreshLayout extends ViewGroup
         return true;
     }
 
+    /**
+     * Notify the widget that refresh state has changed. Do not call this when
+     * refresh is triggered by a swipe gesture.
+     *
+     * @param refreshing Whether or not the view should show refresh progress.
+     */
     public void setRefreshing(boolean refreshing) {
         if (refreshing && mRefreshing != refreshing) {
             mRefreshing = refreshing;
@@ -636,8 +671,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     private void animateOffsetToStartPosition(int from, Animation.AnimationListener listener) {
         mFrom = from;
         mAnimateToStartAnimation.reset();
-        mAnimateToStartAnimation.setDuration(mAnimateDuration);
-        mAnimateToStartAnimation.setInterpolator(mInterpolator);
+        mAnimateToStartAnimation.setDuration(mAnimateToStartDuration);
+        mAnimateToStartAnimation.setInterpolator(mAnimateToStartInterpolator);
         if (listener != null) {
             mAnimateToStartAnimation.setAnimationListener(listener);
         }
@@ -649,8 +684,8 @@ public class RecyclerRefreshLayout extends ViewGroup
         mFrom = from;
 
         mAnimateToRefreshingAnimation.reset();
-        mAnimateToRefreshingAnimation.setDuration(mAnimateDuration);
-        mAnimateToRefreshingAnimation.setInterpolator(mInterpolator);
+        mAnimateToRefreshingAnimation.setDuration(mAnimateToRefreshDuration);
+        mAnimateToRefreshingAnimation.setInterpolator(mAnimateToRefreshInterpolator);
 
         if (listener != null) {
             mAnimateToRefreshingAnimation.setAnimationListener(listener);
@@ -761,6 +796,10 @@ public class RecyclerRefreshLayout extends ViewGroup
         return false;
     }
 
+    /**
+     * Set the listener to be notified when a refresh is triggered via the swipe
+     * gesture.
+     */
     public void setOnRefreshListener(OnRefreshListener listener) {
         mOnRefreshListener = listener;
     }
