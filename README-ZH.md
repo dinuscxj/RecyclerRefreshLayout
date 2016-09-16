@@ -30,10 +30,10 @@
     }
 ```
 
-*2.* 支持刷新的时候滚动. (测试版本)
+*2.* 支持刷新的时候滚动. (推荐)
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.0'
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.1'
     }
 ```
 

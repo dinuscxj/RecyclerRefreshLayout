@@ -36,11 +36,11 @@ Add the following dependency to your build.gradle file:
     }
 ```
 
-*2.* support scrolling when the RecyclerRefreshLayout is refreshing. (test)
+*2.* support scrolling when the RecyclerRefreshLayout is refreshing. (recommend)
 
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.0'
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.1'
     }
 ```
 
