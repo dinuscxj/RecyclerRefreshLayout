@@ -13,7 +13,7 @@ public class OpenProjectRefreshActivity extends AppCompatActivity {
         setContentView(R.layout.activity_container);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, OpenProjectRecyclerFragment.newInstance())
+                .replace(R.id.fragment_container, OpenProjectTabPagerFragment.newInstance())
                 .commit();
     }
 }
