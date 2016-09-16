@@ -29,7 +29,7 @@ progress animation, call `setEnabled(false)` on the `view`.
 Add the following dependency to your build.gradle file:
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.0.7'
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.0.8'
     }
 ```
 
