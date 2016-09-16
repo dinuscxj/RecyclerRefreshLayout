@@ -51,7 +51,6 @@ public class RecyclerRefreshLayout extends ViewGroup
     // the threshold of the trigger to refresh
     private static final int DEFAULT_REFRESH_TARGET_OFFSET_DP = 50;
 
-    private static final float DRAG_RATE = 0.5f;
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2.0f;
 
     // NestedScroll
@@ -615,7 +614,7 @@ public class RecyclerRefreshLayout extends ViewGroup
                     return false;
                 }
 
-                final float overScrollTop = (activeMoveY - mInitialMotionY) * DRAG_RATE;
+                final float overScrollTop = (activeMoveY - mInitialMotionY);
 
                 mIsBeingDragged = false;
                 mActivePointerId = INVALID_POINTER;
@@ -715,6 +714,8 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private void finishSpinner(float overScrollTop) {
         mReturningToStart = true;
+
+        overScrollTop = mIDragDistanceConverter.convert(overScrollTop, mRefreshTargetOffset);
 
         if (overScrollTop > mRefreshTargetOffset) {
             setRefreshing(true, true);
