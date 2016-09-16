@@ -22,9 +22,18 @@
 ## 注入
 
 在你的build.gradle文件里添加下面依赖:
+
+1. 不支持刷新的时候滚动. (稳定版本)
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.0.6'
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.0.8'
+    }
+```
+
+2. 支持刷新的时候滚动. (测试版本)
+```gradle
+    dependencies {
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.0'
     }
 ```
 

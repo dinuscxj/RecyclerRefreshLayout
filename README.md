@@ -27,9 +27,20 @@ progress animation, call `setEnabled(false)` on the `view`.
 ## Installation
 
 Add the following dependency to your build.gradle file:
+
+1. don't support scrolling when the RecyclerRefreshLayout is refreshing. (stable)
+
 ```gradle
     dependencies {
         compile 'com.dinuscxj:recyclerrefreshlayout:1.0.8'
+    }
+```
+
+2. support scrolling when the RecyclerRefreshLayout is refreshing. (test)
+
+```gradle
+    dependencies {
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.0'
     }
 ```
 
