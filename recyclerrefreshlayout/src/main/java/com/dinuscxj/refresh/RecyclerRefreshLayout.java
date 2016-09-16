@@ -624,10 +624,6 @@ public class RecyclerRefreshLayout extends ViewGroup
             return false;
         }
 
-        if (mIsAnimatingToStart) {
-            return true;
-        }
-
         if ((!isEnabled() || (canChildScrollUp(mTarget) && !mDispatchTargetTouchDown))) {
             return false;
         }
@@ -675,7 +671,6 @@ public class RecyclerRefreshLayout extends ViewGroup
                 break;
         }
 
-        Log.i("debug", "isDragged " + mIsBeingDragged);
         return mIsBeingDragged;
     }
 
@@ -686,16 +681,12 @@ public class RecyclerRefreshLayout extends ViewGroup
             return false;
         }
 
-        if (mIsAnimatingToStart) {
-            return false;
-        }
-
         if (!isEnabled() || (canChildScrollUp(mTarget) && !mDispatchTargetTouchDown)) {
             Log.i("debug", "child touch event " + ev.getAction());
             return false;
         }
 
-        Log.i("debug", "move touch event " + ev.getAction() + "isRefreshing" + mIsRefreshing);
+        Log.i("debug", "parent touch event " + ev.getAction() + "isRefreshing" + mIsRefreshing);
 
         final int action = ev.getAction();
 
@@ -715,7 +706,15 @@ public class RecyclerRefreshLayout extends ViewGroup
                     return false;
                 }
 
-                float overScrollY = activeMoveY - mInitialMotionY + mInitialScrollY;
+                float overScrollY;
+                if (mIsAnimatingToStart) {
+                    overScrollY = getTop();
+
+                    mInitialMotionY = activeMoveY;
+                    mInitialScrollY = -getTop();
+                } else {
+                    overScrollY = activeMoveY - mInitialMotionY + mInitialScrollY;
+                }
 
                 if (mIsRefreshing) {
                     if (overScrollY <= 0) {
@@ -776,11 +775,13 @@ public class RecyclerRefreshLayout extends ViewGroup
                     return false;
                 }
 
-                if (!mIsBeingDragged) {
+                if (!mIsBeingDragged && -getScrollY() <= 0) {
                     return false;
                 }
 
-                final float overScrollTop = (activeMoveY - mInitialMotionY + (-mInitialScrollY));
+                final float overScrollTop = -getScrollY();
+
+                Log.i("diff", overScrollTop + " --- " + (activeMoveY - mInitialMotionY + (-mInitialScrollY)));
 
                 mIsBeingDragged = false;
                 mActivePointerId = INVALID_POINTER;
@@ -837,9 +838,14 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void animateOffsetToStartPosition(int from, Animation.AnimationListener listener) {
+        if (computeAnimateToStartDuration(from) <= 0) {
+            listener.onAnimationEnd(null);
+            return;
+        }
+
         mFrom = from;
         mAnimateToStartAnimation.reset();
-        mAnimateToStartAnimation.setDuration(computeAnimateToStartDuration(mAnimateToStartDuration));
+        mAnimateToStartAnimation.setDuration(computeAnimateToStartDuration(from));
         mAnimateToStartAnimation.setInterpolator(mAnimateToStartInterpolator);
         if (listener != null) {
             mAnimateToStartAnimation.setAnimationListener(listener);
@@ -849,10 +855,14 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void animateToRefreshingPosition(int from, Animation.AnimationListener listener) {
-        mFrom = from;
+        if (computeAnimateToRefreshingDuration(from) <= 0) {
+            listener.onAnimationEnd(null);
+            return;
+        }
 
+        mFrom = from;
         mAnimateToRefreshingAnimation.reset();
-        mAnimateToRefreshingAnimation.setDuration(computeAnimateToRefreshingDuration(mAnimateToRefreshDuration));
+        mAnimateToRefreshingAnimation.setDuration(computeAnimateToRefreshingDuration(from));
         mAnimateToRefreshingAnimation.setInterpolator(mAnimateToRefreshInterpolator);
 
         if (listener != null) {
