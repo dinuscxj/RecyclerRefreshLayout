@@ -6,6 +6,10 @@
     <string name="loading_text">loading</string>
     <string name="no_more">no more</string>
 
+    <string name="tab1">tab1</string>
+    <string name="tab2">tab2</string>
+    <string name="tab3">tab3</string>
+
     <string name="title">Glossary of terms:</string>
     <string name="content">Adapter: A subclass of RecyclerView.Adapter responsible for providing views that represent items in a data set.
 Position: The position of a data item within an Adapter.
