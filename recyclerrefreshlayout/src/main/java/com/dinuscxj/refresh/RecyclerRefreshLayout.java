@@ -424,7 +424,7 @@ public class RecyclerRefreshLayout extends ViewGroup
     public void onStopNestedScroll(View target) {
         mNestedScrollingParentHelper.onStopNestedScroll(target);
         if (mTotalUnconsumed > 0) {
-            finishSpinner(mTotalUnconsumed);
+            finishSpinner();
             mTotalUnconsumed = 0;
         }
 
@@ -779,14 +779,12 @@ public class RecyclerRefreshLayout extends ViewGroup
                     return false;
                 }
 
-                final float overScrollTop = -getScrollY();
-
-                Log.i("diff", overScrollTop + " --- " + (activeMoveY - mInitialMotionY + (-mInitialScrollY)));
+                Log.i("diff", -getScrollY() + " --- " + (activeMoveY - mInitialMotionY + (-mInitialScrollY)));
 
                 mIsBeingDragged = false;
                 mActivePointerId = INVALID_POINTER;
 
-                finishSpinner(overScrollTop);
+                finishSpinner();
                 return false;
             }
             default:
@@ -892,18 +890,23 @@ public class RecyclerRefreshLayout extends ViewGroup
             
         float convertScrollOffset;
         float refreshTargetOffset;
-        switch (mRefreshStyle) {
-            case FLOAT:
-                convertScrollOffset = mRefreshInitialOffset
-                        + mDragDistanceConverter.convert(scrollOffset, mRefreshTargetOffset);
-                refreshTargetOffset = mUsingCustomRefreshInitialOffset
-                        ? mRefreshTargetOffset
-                        : mRefreshTargetOffset - Math.abs(mRefreshInitialOffset);
-                break;
-            default:
-                convertScrollOffset = mDragDistanceConverter.convert(scrollOffset, mRefreshTargetOffset);
-                refreshTargetOffset = mRefreshTargetOffset;
-                break;
+        if (!mIsRefreshing) {
+            switch (mRefreshStyle) {
+                case FLOAT:
+                    convertScrollOffset = mRefreshInitialOffset
+                            + mDragDistanceConverter.convert(scrollOffset, mRefreshTargetOffset);
+                    refreshTargetOffset = mUsingCustomRefreshInitialOffset
+                            ? mRefreshTargetOffset
+                            : mRefreshTargetOffset - Math.abs(mRefreshInitialOffset);
+                    break;
+                default:
+                    convertScrollOffset = mDragDistanceConverter.convert(scrollOffset, mRefreshTargetOffset);
+                    refreshTargetOffset = mRefreshTargetOffset;
+                    break;
+            }
+        } else {
+            convertScrollOffset = scrollOffset;
+            refreshTargetOffset = mRefreshTargetOffset;
         }
 
         if (mRefreshView.getVisibility() != View.VISIBLE) {
@@ -925,12 +928,10 @@ public class RecyclerRefreshLayout extends ViewGroup
         setTargetAndRefreshViewOffsetY((int) (convertScrollOffset - mCurrentOffsetY));
     }
 
-    private void finishSpinner(float overScrollTop) {
-        overScrollTop = mDragDistanceConverter.convert(overScrollTop, mRefreshTargetOffset);
+    private void finishSpinner() {
+        float scrollY = getTop();
 
-        overScrollTop = mDragDistanceConverter.convert(overScrollTop, mRefreshTargetOffset);
-
-        if (overScrollTop > mRefreshTargetOffset) {
+        if (scrollY > mRefreshTargetOffset) {
             setRefreshing(true, true);
         } else {
             mIsRefreshing = false;
