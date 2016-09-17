@@ -33,7 +33,7 @@
 *2.* 支持刷新的时候滚动. (推荐)
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.2'
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.3'
     }
 ```
 
