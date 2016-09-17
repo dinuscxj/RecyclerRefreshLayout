@@ -40,7 +40,7 @@ Add the following dependency to your build.gradle file:
 
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.1'
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.2'
     }
 ```
 
