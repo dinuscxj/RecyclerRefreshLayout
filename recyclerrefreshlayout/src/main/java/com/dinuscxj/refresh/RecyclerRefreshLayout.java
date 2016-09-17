@@ -216,10 +216,8 @@ public class RecyclerRefreshLayout extends ViewGroup
         mIRefreshStatus.reset();
         mRefreshView.setVisibility(View.GONE);
         
-        mInitialScrollY = 0.0f;
         mIsRefreshing = false;
         mIsAnimatingToStart = false;
-        mDispatchTargetTouchDown = false;
     }
 
     private void setTargetAndRefreshViewToInitial() {
@@ -682,11 +680,8 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
 
         if (!isEnabled() || (canChildScrollUp(mTarget) && !mDispatchTargetTouchDown)) {
-            Log.i("debug", "child touch event " + ev.getAction());
             return false;
         }
-
-        Log.i("debug", "parent touch event " + ev.getAction() + "isRefreshing" + mIsRefreshing);
 
         final int action = ev.getAction();
 
@@ -718,7 +713,6 @@ public class RecyclerRefreshLayout extends ViewGroup
 
                 if (mIsRefreshing) {
                     if (overScrollY <= 0) {
-                        Log.d("debug", "dispatch target");
                         if (mDispatchTargetTouchDown) {
                             mTarget.dispatchTouchEvent(ev);
                         } else {
@@ -728,7 +722,6 @@ public class RecyclerRefreshLayout extends ViewGroup
                             mTarget.dispatchTouchEvent(obtain);
                         }
                     }
-                    Log.i("debug", "overScrollY" + overScrollY);
                     moveSpinner(overScrollY);
                 } else {
                     if (mIsBeingDragged) {
@@ -756,34 +749,21 @@ public class RecyclerRefreshLayout extends ViewGroup
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL: {
-                if (mActivePointerId == INVALID_POINTER) {
+                if (mActivePointerId == INVALID_POINTER
+                        || getMotionEventY(ev, mActivePointerId) == -1) {
+                    resetTouchEvent();
                     return false;
                 }
 
-                if (mIsRefreshing) {
+                if (mIsRefreshing || mIsAnimatingToStart) {
                     if (mDispatchTargetTouchDown) {
                         mTarget.dispatchTouchEvent(ev);
-                        mDispatchTargetTouchDown = false;
                     }
+                    resetTouchEvent();
                     return false;
                 }
 
-                final float activeMoveY = getMotionEventY(ev, mActivePointerId);
-                if (activeMoveY == -1) {
-                    mIsBeingDragged = false;
-                    mActivePointerId = INVALID_POINTER;
-                    return false;
-                }
-
-                if (!mIsBeingDragged && -getScrollY() <= 0) {
-                    return false;
-                }
-
-                Log.i("diff", -getScrollY() + " --- " + (activeMoveY - mInitialMotionY + (-mInitialScrollY)));
-
-                mIsBeingDragged = false;
-                mActivePointerId = INVALID_POINTER;
-
+                resetTouchEvent();
                 finishSpinner();
                 return false;
             }
@@ -792,6 +772,14 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
 
         return true;
+    }
+
+    private void resetTouchEvent() {
+        mInitialScrollY = 0.0f;
+
+        mIsBeingDragged = false;
+        mDispatchTargetTouchDown = false;
+        mActivePointerId = INVALID_POINTER;
     }
 
     /**
@@ -929,8 +917,11 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void finishSpinner() {
-        float scrollY = getTop();
+        if (mIsRefreshing || mIsAnimatingToStart) {
+            return;
+        }
 
+        float scrollY = getTop();
         if (scrollY > mRefreshTargetOffset) {
             setRefreshing(true, true);
         } else {
