@@ -551,7 +551,6 @@ public class RecyclerRefreshLayout extends ViewGroup
           }
 
         }
-
         mRefreshViewIndex = -1;
         for (int index = 0; index < getChildCount(); index++) {
             if (getChildAt(index) == mRefreshView) {
