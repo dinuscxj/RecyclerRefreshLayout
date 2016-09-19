@@ -28,7 +28,7 @@ progress animation, call `setEnabled(false)` on the `view`.
 
 Add the following dependency to your build.gradle file:
 
-*1.* don't support scrolling when the RecyclerRefreshLayout is refreshing. (stable)
+*1.* don't support scrolling when the RecyclerRefreshLayout is refreshing. branch [dinus_not_support_scroll](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/dinus_not_support_scroll) (stable)
 
 ```gradle
     dependencies {
@@ -36,7 +36,7 @@ Add the following dependency to your build.gradle file:
     }
 ```
 
-*2.* support scrolling when the RecyclerRefreshLayout is refreshing. (recommend)
+*2.* support scrolling when the RecyclerRefreshLayout is refreshing. branch [dinus_support_scroll](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/dinus_support_scroll) (recommend)
 
 ```gradle
     dependencies {
