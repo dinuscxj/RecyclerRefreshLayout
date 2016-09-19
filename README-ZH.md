@@ -26,14 +26,14 @@
 *1.* 不支持刷新的时候滚动. 分支 [dinus_not_support_scroll](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/dinus_not_support_scroll) (稳定版本)
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.0.8'
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.0.9'
     }
 ```
 
 *2.* 支持刷新的时候滚动. 分支 branch [dinus_support_scroll](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/dinus_support_scroll) (推荐)
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.3'
+        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.4'
     }
 ```
 
