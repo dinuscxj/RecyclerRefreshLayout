@@ -126,9 +126,9 @@ public class RefreshViewEg extends LinearLayout implements IRefreshStatus {
         int endG = (endInt >> 8) & 0xff;
         int endB = endInt & 0xff;
 
-        return ((startA + (int)(fraction * (endA - startA))) << 24) |
-                ((startR + (int)(fraction * (endR - startR))) << 16) |
-                ((startG + (int)(fraction * (endG - startG))) << 8) |
-                ((startB + (int)(fraction * (endB - startB))));
+        return ((startA + (int) (fraction * (endA - startA))) << 24) |
+                ((startR + (int) (fraction * (endR - startR))) << 16) |
+                ((startG + (int) (fraction * (endG - startG))) << 8) |
+                ((startB + (int) (fraction * (endB - startB))));
     }
 }
