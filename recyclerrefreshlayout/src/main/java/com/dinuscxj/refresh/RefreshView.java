@@ -54,7 +54,7 @@ public class RefreshView extends ImageView implements IRefreshStatus {
     public void reset() {
         clearAnimation();
 
-        this.setImageDrawable(getResources().getDrawable(R.drawable.default_ptr_flip));
+        this.setImageResource(R.drawable.default_ptr_flip);
     }
 
     @Override
@@ -86,6 +86,8 @@ public class RefreshView extends ImageView implements IRefreshStatus {
 
     @Override
     public void pullProgress(float pullDistance, float pullProgress) {
-
+        if (pullProgress < 1.0f) {
+            setImageResource(R.drawable.default_ptr_flip);
+        }
     }
 }

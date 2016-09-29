@@ -87,8 +87,8 @@ public class OpenProjectRecyclerFragment extends RecyclerFragment<OpenProjectMod
         getOriginAdapter().setItemList(mItemList);
         getHeaderAdapter().notifyDataSetChanged();
 
-//        the simple use of RecyclerRefreshLayout.setDragDistanceConverter(IDragDistanceConvertEg);
-//        getRecyclerRefreshLayout().setDragDistanceConverter(new DragDistanceConverterEg());
+//        the simple use of RecyclerRefreshLayout.setTargetDragDistanceConverter(IDragDistanceConvertEg);
+//        getRecyclerRefreshLayout().setTargetDragDistanceConverter(new DragDistanceConverterEg());
 //        the simple use of RecyclerRefreshLayout.setRefreshView(View, LayoutParams);
 //        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        getRecyclerRefreshLayout().setRefreshView(new RefreshViewEg(getActivity()), layoutParams);
