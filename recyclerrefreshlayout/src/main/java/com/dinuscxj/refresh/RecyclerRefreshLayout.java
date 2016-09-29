@@ -10,6 +10,7 @@ import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -74,11 +75,19 @@ public class RecyclerRefreshLayout extends ViewGroup
     private int mFrom;
     private int mTouchSlop;
     private int mSpinnerSize;
-    private int mCurrentScrollOffset;
 
     private float mInitialDownY;
     private float mInitialMotionY;
+    private float mCurrentOffsetY;
+    private float mRefreshInitialOffset;
     private float mRefreshTargetOffset;
+
+    // Whether the client has set a custom starting position;
+    private boolean mUsingCustomRefreshInitialOffset = false;
+    // Whether or not the starting offset has been determined.
+    private boolean mRefreshInitialOffsetCalculated = false;
+
+    private RefreshStyle mRefreshStyle = RefreshStyle.NORMAL;
 
     private View mTarget;
     private View mRefreshView;
@@ -94,21 +103,39 @@ public class RecyclerRefreshLayout extends ViewGroup
     private final Animation mAnimateToRefreshingAnimation = new Animation() {
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
-            int targetEnd = (int) mRefreshTargetOffset;
-            int targetTop = (int) (mFrom + (targetEnd - mFrom) * interpolatedTime);
-
-            scrollTargetYOffset(targetTop - mTarget.getTop());
+          switch (mRefreshStyle) {
+            case FLOAT:
+              float refreshTargetOffset = mUsingCustomRefreshInitialOffset
+                  ? mRefreshTargetOffset
+                  : mRefreshTargetOffset - Math.abs(mRefreshInitialOffset);
+              animateToTargetOffset(refreshTargetOffset, mRefreshView.getTop(), interpolatedTime);
+              break;
+            default:
+              animateToTargetOffset(mRefreshTargetOffset, mTarget.getTop(), interpolatedTime);
+              break;
+          }
         }
     };
 
     private final Animation mAnimateToStartAnimation = new Animation() {
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
-            int targetEnd = 0;
-            int targetTop = (int) (mFrom + (targetEnd - mFrom) * interpolatedTime);
-            scrollTargetYOffset(targetTop - mTarget.getTop());
+            switch (mRefreshStyle) {
+              case FLOAT:
+                animateToTargetOffset(mRefreshInitialOffset, mRefreshView.getTop(), interpolatedTime);
+                break;
+              default:
+                animateToTargetOffset(0.0f, mTarget.getTop(), interpolatedTime);
+                break;
+            }
         }
     };
+
+    private void animateToTargetOffset(float targetEnd, float currentOffset, float interpolatedTime) {
+      int targetOffset = (int) (mFrom + (targetEnd - mFrom) * interpolatedTime);
+
+      setTargetAndRefreshViewOffsetY((int) (targetOffset - currentOffset));
+    }
 
     private final Animation.AnimationListener mRefreshingListener = new Animation.AnimationListener() {
         @Override
@@ -158,6 +185,9 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mRefreshTargetOffset = DEFAULT_REFRESH_TARGET_OFFSET_DP * metrics.density;
 
+        mCurrentOffsetY = 0.0f;
+        mRefreshInitialOffset = 0.0f;
+
         mNestedScrollingParentHelper = new NestedScrollingParentHelper(this);
         mNestedScrollingChildHelper = new NestedScrollingChildHelper(this);
 
@@ -175,16 +205,27 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void reset() {
-        //todo
-        scrollTargetYOffset(0);
+        setTargetAndRefreshViewToInitial();
         mIRefreshStatus.reset();
+        mRefreshView.setVisibility(View.GONE);
         mRefreshing = false;
         mReturningToStart = false;
     }
 
+    private void setTargetAndRefreshViewToInitial() {
+      switch (mRefreshStyle) {
+        case FLOAT:
+          setTargetAndRefreshViewOffsetY((int) (mRefreshInitialOffset - mCurrentOffsetY));
+          break;
+        default:
+          setTargetAndRefreshViewOffsetY((int) (0 - mCurrentOffsetY));
+          break;
+      }
+    }
+
     private void initRefreshView() {
         mRefreshView = new RefreshView(getContext());
-
+        mRefreshView.setVisibility(View.GONE);
         if (mRefreshView instanceof IRefreshStatus) {
             mIRefreshStatus = (IRefreshStatus) mRefreshView;
         } else {
@@ -222,6 +263,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         } else {
             throw new ClassCastException("the refreshView must implement the interface IRefreshStatus");
         }
+        mRefreshView.setVisibility(View.GONE);
         addView(mRefreshView, layoutParams);
     }
 
@@ -240,7 +282,6 @@ public class RecyclerRefreshLayout extends ViewGroup
     public void setAnimateToStartInterpolator(Interpolator animateToStartInterpolator) {
         mAnimateToStartInterpolator = animateToStartInterpolator;
     }
-
 
     /**
      * @param animateToRefreshInterpolator The interpolator used by the animation that
@@ -275,16 +316,43 @@ public class RecyclerRefreshLayout extends ViewGroup
         requestLayout();
     }
 
+    /**
+     * @param refreshInitialOffset the top position of the {@link #mRefreshView} relative to its parent.
+     */
+    public void setRefreshInitialOffset(float refreshInitialOffset) {
+        mRefreshInitialOffset = refreshInitialOffset;
+        mUsingCustomRefreshInitialOffset = true;
+        requestLayout();
+    }
+
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
-        if (mRefreshViewIndex < 0) {
-            return i;
-        } else if (i == 0) {
-            return mRefreshViewIndex;
-        } else if (i <= mRefreshViewIndex) {
-            return i - 1;
-        } else {
-            return i;
+        switch (mRefreshStyle) {
+            case FLOAT:
+                if (mRefreshViewIndex < 0) {
+                  return i;
+                } else if (i == childCount - 1) {
+                  // Draw the selected child last
+                  return mRefreshViewIndex;
+                } else if (i >= mRefreshViewIndex) {
+                  // Move the children after the selected child earlier one
+                  return i + 1;
+                } else {
+                  // Keep the children before the selected child the same
+                  return i;
+                }
+            default:
+                if (mRefreshViewIndex < 0) {
+                  return i;
+                } else if (i == 0) {
+                  // Draw the selected child first
+                  return mRefreshViewIndex;
+                } else if (i <= mRefreshViewIndex) {
+                  // Move the children before the selected child earlier one
+                  return i + 1;
+                } else {
+                  return i;
+                }
         }
     }
 
@@ -443,14 +511,8 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mTarget.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
 
-        if (mRefreshTargetOffset < mRefreshView.getMeasuredHeight()) {
-            mRefreshTargetOffset = mRefreshView.getMeasuredHeight();
-        }
-
-        int offsetTop = (int) -(mRefreshTargetOffset - (mRefreshTargetOffset - mRefreshView.getMeasuredHeight()) / 2);
-
-        mRefreshView.layout((width / 2 - mRefreshView.getMeasuredWidth() / 2), offsetTop,
-                (width / 2 + mRefreshView.getMeasuredWidth() / 2), offsetTop + mRefreshView.getMeasuredHeight());
+        mRefreshView.layout((width / 2 - mRefreshView.getMeasuredWidth() / 2), (int) mRefreshInitialOffset,
+                (width / 2 + mRefreshView.getMeasuredWidth() / 2), (int) (mRefreshInitialOffset + mRefreshView.getMeasuredHeight()));
     }
 
     @Override
@@ -465,6 +527,23 @@ public class RecyclerRefreshLayout extends ViewGroup
         measureTarget();
         measureRefreshView(widthMeasureSpec, heightMeasureSpec);
 
+        if (!mUsingCustomRefreshInitialOffset && !mRefreshInitialOffsetCalculated) {
+          mRefreshInitialOffsetCalculated = true;
+          switch (mRefreshStyle) {
+            case PINNED:
+              mCurrentOffsetY = mRefreshInitialOffset = 0.0f;
+              break;
+            case FLOAT:
+              mCurrentOffsetY = mRefreshInitialOffset = -mRefreshView.getMeasuredHeight();
+              break;
+            default:
+              mCurrentOffsetY = 0.0f;
+              mRefreshInitialOffset = -mRefreshView.getMeasuredHeight();
+              break;
+          }
+
+        }
+
         mRefreshViewIndex = -1;
         for (int index = 0; index < getChildCount(); index++) {
             if (getChildAt(index) == mRefreshView) {
@@ -472,6 +551,8 @@ public class RecyclerRefreshLayout extends ViewGroup
                 break;
             }
         }
+
+
     }
 
     private void measureTarget() {
@@ -604,10 +685,6 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if (!mRefreshing) {
-                    //todo
-                    scrollTargetYOffset(0);
-                }
                 mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 mIsBeingDragged = false;
                 break;
@@ -689,7 +766,7 @@ public class RecyclerRefreshLayout extends ViewGroup
             mRefreshing = refreshing;
             mNotify = false;
 
-            animateToRefreshingPosition(mCurrentScrollOffset, mRefreshingListener);
+            animateToRefreshingPosition((int) mCurrentOffsetY, mRefreshingListener);
         } else {
             setRefreshing(refreshing, false);
         }
@@ -700,9 +777,9 @@ public class RecyclerRefreshLayout extends ViewGroup
             mNotify = notify;
             mRefreshing = refreshing;
             if (refreshing) {
-                animateToRefreshingPosition(mCurrentScrollOffset, mRefreshingListener);
+                animateToRefreshingPosition((int) mCurrentOffsetY, mRefreshingListener);
             } else {
-                animateOffsetToStartPosition(mCurrentScrollOffset, mResetListener);
+                animateOffsetToStartPosition((int) mCurrentOffsetY, mResetListener);
             }
         }
     }
@@ -752,22 +829,38 @@ public class RecyclerRefreshLayout extends ViewGroup
                 * mAnimateToStartDuration);
     }
 
-    private void moveSpinner(float targetScrollOffset) {
-        targetScrollOffset = mDragDistanceConverter.convert(targetScrollOffset, mRefreshTargetOffset);
+    private void moveSpinner(float scrollOffset) {
+        float convertScrollOffset;
+        float refreshTargetOffset;
+        switch (mRefreshStyle) {
+          case FLOAT:
+            convertScrollOffset = mRefreshInitialOffset
+                + mDragDistanceConverter.convert(scrollOffset, mRefreshTargetOffset);
+            refreshTargetOffset = mUsingCustomRefreshInitialOffset
+                ? mRefreshTargetOffset
+                : mRefreshTargetOffset - Math.abs(mRefreshInitialOffset);
+            break;
+          default:
+            convertScrollOffset = mDragDistanceConverter.convert(scrollOffset, mRefreshTargetOffset);
+            refreshTargetOffset = mRefreshTargetOffset;
+            break;
+        }
 
         if (mRefreshView.getVisibility() != View.VISIBLE) {
             mRefreshView.setVisibility(View.VISIBLE);
         }
 
-        if (targetScrollOffset > mRefreshTargetOffset && !mIsFitRefreshing) {
+        if (convertScrollOffset > refreshTargetOffset && !mIsFitRefreshing) {
             mIsFitRefreshing = true;
             mIRefreshStatus.pullToRefresh();
-        } else if (targetScrollOffset <= mRefreshTargetOffset && mIsFitRefreshing) {
+        } else if (convertScrollOffset <= refreshTargetOffset && mIsFitRefreshing) {
             mIsFitRefreshing = false;
             mIRefreshStatus.releaseToRefresh();
         }
 
-        scrollTargetYOffset((int) (targetScrollOffset - mCurrentScrollOffset));
+        Log.i("debug", convertScrollOffset + "  " + mCurrentOffsetY);
+
+        setTargetAndRefreshViewOffsetY((int) (convertScrollOffset - mCurrentOffsetY));
     }
 
     private void finishSpinner(float overScrollTop) {
@@ -779,7 +872,7 @@ public class RecyclerRefreshLayout extends ViewGroup
             setRefreshing(true, true);
         } else {
             mRefreshing = false;
-            animateOffsetToStartPosition(mCurrentScrollOffset, mResetListener);
+            animateOffsetToStartPosition((int) mCurrentOffsetY, mResetListener);
         }
     }
 
@@ -793,13 +886,27 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
     }
 
-    private void scrollTargetYOffset(int offsetY) {
-        mTarget.offsetTopAndBottom(offsetY);
-        mRefreshView.offsetTopAndBottom(offsetY);
-        mCurrentScrollOffset = mTarget.getTop();
+    private void setTargetAndRefreshViewOffsetY(int offsetY) {
+        switch (mRefreshStyle) {
+            case FLOAT:
+                mRefreshView.offsetTopAndBottom(offsetY);
+                mCurrentOffsetY = mRefreshView.getTop();
+              break;
+            case PINNED:
+                mTarget.offsetTopAndBottom(offsetY);
+                mCurrentOffsetY = mTarget.getTop();
+              break;
+            default:
+                mTarget.offsetTopAndBottom(offsetY);
+                mRefreshView.offsetTopAndBottom(offsetY);
+                mCurrentOffsetY = mTarget.getTop();
+              break;
+        }
 
+
+        Log.i("debug", "current offset" + mCurrentOffsetY);
+        mIRefreshStatus.pullProgress(mCurrentOffsetY, mCurrentOffsetY / mRefreshTargetOffset);
         invalidate();
-        mIRefreshStatus.pullProgress(mCurrentScrollOffset, mCurrentScrollOffset / mRefreshTargetOffset);
     }
 
     private float getMotionEventY(MotionEvent ev, int activePointerId) {
@@ -855,6 +962,21 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
 
         return false;
+    }
+
+    /**
+     * Set the style of the RefreshView.
+     * @param refreshStyle One of {@link RefreshStyle#NORMAL}
+     *                     , {@link RefreshStyle#PINNED}, or {@link RefreshStyle#FLOAT}
+     */
+    public void setRefreshStyle(@NonNull RefreshStyle refreshStyle) {
+       mRefreshStyle = refreshStyle;
+    }
+
+    public enum RefreshStyle {
+        NORMAL,
+        PINNED,
+        FLOAT
     }
 
     /**

@@ -19,14 +19,14 @@ public class OpenProjectTabPagerFragment extends TabPagerFragment {
 
     private enum FragmentEntry {
         ARTICLE(
-                R.string.tab1,
-                OpenProjectRecyclerFragment.class),
+                R.string.tab_normal,
+                OpenProjectNormalFragment.class),
         COURSE(
-                R.string.tab2,
-                OpenProjectRecyclerFragment.class),
+                R.string.tab_float,
+                OpenProjectFloatFragment.class),
         FOLLOWING(
-                R.string.tab3,
-                OpenProjectRecyclerFragment.class);
+                R.string.tab_pinned,
+                OpenProjectPinnedFragment.class);
 
         final int titleResource;
         final Class<? extends Fragment> fragmentClass;

@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,16 +17,18 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.dinuscxj.example.R;
 import com.dinuscxj.example.adapter.RecyclerListAdapter;
 import com.dinuscxj.example.model.OpenProjectFactory;
 import com.dinuscxj.example.model.OpenProjectModel;
+import com.dinuscxj.example.utils.DensityUtil;
+import com.dinuscxj.refresh.RecyclerRefreshLayout;
 
-public class OpenProjectRecyclerFragment extends RecyclerFragment<OpenProjectModel> {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class OpenProjectPinnedFragment extends RecyclerFragment<OpenProjectModel> {
     private static final int SIMULATE_UNSPECIFIED = 0;
     private static final int SIMULATE_FRESH_FIRST = 1;
     private static final int SIMULATE_FRESH_NO_DATA = 2;
@@ -40,8 +41,8 @@ public class OpenProjectRecyclerFragment extends RecyclerFragment<OpenProjectMod
 
     private int mSimulateStatus;
 
-    public static OpenProjectRecyclerFragment newInstance() {
-        return new OpenProjectRecyclerFragment();
+    public static OpenProjectPinnedFragment newInstance() {
+        return new OpenProjectPinnedFragment();
     }
 
     @Override
@@ -87,11 +88,8 @@ public class OpenProjectRecyclerFragment extends RecyclerFragment<OpenProjectMod
         getOriginAdapter().setItemList(mItemList);
         getHeaderAdapter().notifyDataSetChanged();
 
-//        the simple use of RecyclerRefreshLayout.setTargetDragDistanceConverter(IDragDistanceConvertEg);
-//        getRecyclerRefreshLayout().setTargetDragDistanceConverter(new DragDistanceConverterEg());
-//        the simple use of RecyclerRefreshLayout.setRefreshView(View, LayoutParams);
-//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        getRecyclerRefreshLayout().setRefreshView(new RefreshViewEg(getActivity()), layoutParams);
+        getRecyclerRefreshLayout().setRefreshStyle(RecyclerRefreshLayout.RefreshStyle.PINNED);
+        getRecyclerRefreshLayout().setRefreshInitialOffset(DensityUtil.dip2px(getActivity(), 15));
     }
 
     @Override
@@ -169,12 +167,12 @@ public class OpenProjectRecyclerFragment extends RecyclerFragment<OpenProjectMod
                     mItemList.clear();
                     mItemList.addAll(openProjectModels);
                     getHeaderAdapter().notifyDataSetChanged();
-                    ItemInteractionListener.super.requestRefresh();
+                    OpenProjectPinnedFragment.ItemInteractionListener.super.requestRefresh();
                 }
 
                 @Override
                 public void onFailed() {
-                    ItemInteractionListener.super.requestFailure();
+                    OpenProjectPinnedFragment.ItemInteractionListener.super.requestFailure();
                 }
             });
         }
@@ -186,12 +184,12 @@ public class OpenProjectRecyclerFragment extends RecyclerFragment<OpenProjectMod
                 public void onSuccess(List<OpenProjectModel> openProjectModels) {
                     mItemList.addAll(openProjectModels);
                     getHeaderAdapter().notifyDataSetChanged();
-                    ItemInteractionListener.super.requestMore();
+                    OpenProjectPinnedFragment.ItemInteractionListener.super.requestMore();
                 }
 
                 @Override
                 public void onFailed() {
-                    ItemInteractionListener.super.requestFailure();
+                    OpenProjectPinnedFragment.ItemInteractionListener.super.requestFailure();
                 }
             });
         }

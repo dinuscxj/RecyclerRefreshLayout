@@ -79,15 +79,13 @@ public class RefreshView extends ImageView implements IRefreshStatus {
     public void releaseToRefresh() {
         clearAnimation();
 
-        if (mRotateAnimation == getAnimation()) {
+        if (getAnimation() == null || getAnimation() == mRotateAnimation) {
             startAnimation(mResetRotateAnimation);
         }
     }
 
     @Override
     public void pullProgress(float pullDistance, float pullProgress) {
-        if (pullProgress < 1.0f) {
-            setImageResource(R.drawable.default_ptr_flip);
-        }
+
     }
 }
