@@ -559,7 +559,6 @@ public class RecyclerRefreshLayout extends ViewGroup
             }
         }
 
-
     }
 
     private void measureTarget() {
@@ -702,10 +701,10 @@ public class RecyclerRefreshLayout extends ViewGroup
 
                 float overScrollY;
                 if (mIsAnimatingToStart) {
-                    overScrollY = getTop();
+                    overScrollY = getTargetOrRefreshViewTop();
 
                     mInitialMotionY = activeMoveY;
-                    mInitialScrollY = -getTop();
+                    mInitialScrollY = -getTargetOrRefreshViewTop();
                 } else {
                     overScrollY = activeMoveY - mInitialMotionY + mInitialScrollY;
                 }
@@ -920,7 +919,7 @@ public class RecyclerRefreshLayout extends ViewGroup
             return;
         }
 
-        float scrollY = getTop();
+        float scrollY = getTargetOrRefreshViewTop();
         if (scrollY > mRefreshTargetOffset) {
             setRefreshing(true, true);
         } else {
@@ -956,10 +955,18 @@ public class RecyclerRefreshLayout extends ViewGroup
               break;
         }
 
-
         Log.i("debug", "current offset" + mCurrentOffsetY);
         mIRefreshStatus.pullProgress(mCurrentOffsetY, mCurrentOffsetY / mRefreshTargetOffset);
         invalidate();
+    }
+
+    private int getTargetOrRefreshViewTop() {
+        switch (mRefreshStyle) {
+            case FLOAT:
+                return mRefreshView.getTop();
+            default:
+                return mTarget.getTop();
+        }
     }
 
     private float getMotionEventY(MotionEvent ev, int activePointerId) {
