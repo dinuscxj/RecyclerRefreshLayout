@@ -370,21 +370,6 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
     }
 
-
-    private Integer getViewFlags(View view) {
-        try {
-            Field field = View.class.getDeclaredField("mViewFlags");
-            field.setAccessible(true);
-            return (Integer) field.get(view);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     @Override
     public void requestDisallowInterceptTouchEvent(boolean b) {
         // if this is a List < L or another view that doesn't support nested
@@ -1122,7 +1107,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         return MotionEventCompat.getY(ev, index);
     }
 
-    public boolean canChildScrollUp(View mTarget) {
+    private boolean canChildScrollUp(View mTarget) {
         if (mTarget == null) {
             return false;
         }
@@ -1159,7 +1144,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
     }
 
-    public boolean isTargetValid() {
+    private boolean isTargetValid() {
         for (int i = 0; i < getChildCount(); i++) {
             if (mTarget == getChildAt(i)) {
                 return true;

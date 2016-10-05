@@ -21,26 +21,16 @@ progress animation, call `setEnabled(false)` on the `view`.
 > Note: The `RecyclerRefreshLayout` supports all of the views: `ListView`, `GridView`, `ScrollView`, `FrameLayout`, or Even a single `TextView`
   
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNormal.gif?width=300)
-![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNoData.gif?width=300)
-![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutFailure.gif?width=300)<br/>
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutFloat.gif?width=300)
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutPinned.gif?width=300)<br/>
 
 ## Installation
 
 Add the following dependency to your build.gradle file:
 
-*1.* don't support scrolling when the RecyclerRefreshLayout is refreshing. branch [dinus_not_support_scroll](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/dinus_not_support_scroll) (stable)
-
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.0.9'
-    }
-```
-
-*2.* support scrolling when the RecyclerRefreshLayout is refreshing. branch [dinus_support_scroll](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/dinus_support_scroll) (recommend)
-
-```gradle
-    dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.4'
+        compile 'com.dinuscxj:recyclerrefreshlayout:2.0.0'
     }
 ```
 
@@ -97,9 +87,19 @@ from the refreshing point or (the release point) to the start point.
 RecyclerRefreshLayout.setAnimateToStartDuration(int);
 ```
 
+Set the top position of the RefreshView relative to its parent.
+```java
+RecyclerRefreshLayoutsetRefreshInitialOffset(float)
+```
+
 Set The minimum distance that trigger refresh
 ```java
 RecyclerRefreshLayout.setRefreshTargetOffset(float)
+```
+
+Set the style of the RefreshView
+```java
+RecyclerRefreshLayout.setRefreshStyle(@NonNull RefreshStyle) 
 ```
 
 ## Customize

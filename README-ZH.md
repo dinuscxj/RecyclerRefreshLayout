@@ -16,24 +16,16 @@
 > 注意: `RecyclerRefreshLayout` 支持所有的View: `ListView`, `GridView`, `ScrollView`, `FrameLayout`, 甚至一个 `TextView`
   
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNormal.gif?width=300)
-![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNoData.gif?width=300)
-![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutFailure.gif?width=300)<br/>
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutFloat.gif?width=300)
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutPinned.gif?width=300)<br/>
 
 ## 注入
 
 在你的build.gradle文件里添加下面依赖:
 
-*1.* 不支持刷新的时候滚动. 分支 [dinus_not_support_scroll](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/dinus_not_support_scroll) (稳定版本)
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.0.9'
-    }
-```
-
-*2.* 支持刷新的时候滚动. 分支 branch [dinus_support_scroll](https://github.com/dinuscxj/RecyclerRefreshLayout/tree/dinus_support_scroll) (推荐)
-```gradle
-    dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:1.2.4'
+        compile 'com.dinuscxj:recyclerrefreshlayout:2.0.0'
     }
 ```
 
@@ -85,9 +77,19 @@ RecyclerRefreshLayout.setAnimateToRefreshDuration(int);
 RecyclerRefreshLayout.setAnimateToStartDuration(int);
 ```
 
+设置RefreshView相对父组件的初始位置
+```java
+RecyclerRefreshLayoutsetRefreshInitialOffset(float)
+```
+
 设置触发刷新需要滑动的最小距离
 ```java
 RecyclerRefreshLayout.setRefreshTargetOffset(float)
+```
+
+设置RefreshView的样式
+```java
+RecyclerRefreshLayout.setRefreshStyle(@NonNull RefreshStyle) 
 ```
 
 ## 自定义
