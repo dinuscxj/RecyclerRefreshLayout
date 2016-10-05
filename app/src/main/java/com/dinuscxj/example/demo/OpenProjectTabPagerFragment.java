@@ -18,13 +18,13 @@ public class OpenProjectTabPagerFragment extends TabPagerFragment {
     }
 
     private enum FragmentEntry {
-        ARTICLE(
+        NORMAL(
                 R.string.tab_normal,
                 OpenProjectNormalFragment.class),
-        COURSE(
+        FLOAT(
                 R.string.tab_float,
                 OpenProjectFloatFragment.class),
-        FOLLOWING(
+        PINNED(
                 R.string.tab_pinned,
                 OpenProjectPinnedFragment.class);
 

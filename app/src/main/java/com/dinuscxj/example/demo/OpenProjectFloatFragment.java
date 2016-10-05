@@ -21,6 +21,7 @@ import com.dinuscxj.example.R;
 import com.dinuscxj.example.adapter.RecyclerListAdapter;
 import com.dinuscxj.example.model.OpenProjectFactory;
 import com.dinuscxj.example.model.OpenProjectModel;
+import com.dinuscxj.example.utils.DensityUtil;
 import com.dinuscxj.refresh.RecyclerRefreshLayout;
 
 import java.util.ArrayList;
@@ -87,6 +88,10 @@ public class OpenProjectFloatFragment extends RecyclerFragment<OpenProjectModel>
         getHeaderAdapter().notifyDataSetChanged();
 
         getRecyclerRefreshLayout().setRefreshStyle(RecyclerRefreshLayout.RefreshStyle.FLOAT);
+
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                (int)DensityUtil.dip2px(getActivity(), 40), (int)DensityUtil.dip2px(getActivity(), 40));
+        getRecyclerRefreshLayout().setRefreshView(new MaterialRefreshView(getActivity()), layoutParams);
     }
 
     @Override

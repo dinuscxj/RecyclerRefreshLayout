@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,9 @@ import com.dinuscxj.example.R;
 import com.dinuscxj.example.adapter.RecyclerListAdapter;
 import com.dinuscxj.example.model.OpenProjectFactory;
 import com.dinuscxj.example.model.OpenProjectModel;
+import com.dinuscxj.example.utils.DensityUtil;
+import com.dinuscxj.refresh.RecyclerRefreshLayout;
+import com.dinuscxj.refresh.RefreshView;
 
 public class OpenProjectNormalFragment extends RecyclerFragment<OpenProjectModel> {
     private static final int SIMULATE_UNSPECIFIED = 0;
@@ -33,7 +37,7 @@ public class OpenProjectNormalFragment extends RecyclerFragment<OpenProjectModel
     private static final int SIMULATE_FRESH_NO_DATA = 2;
     private static final int SIMULATE_FRESH_FAILURE = 3;
 
-    private static final int REQUEST_DURATION = 1000;
+    private static final int REQUEST_DURATION = 800;
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private final List<OpenProjectModel> mItemList = new ArrayList<>();
@@ -88,6 +92,11 @@ public class OpenProjectNormalFragment extends RecyclerFragment<OpenProjectModel
         getHeaderAdapter().notifyDataSetChanged();
 
         getRecyclerRefreshLayout().setDragDistanceConverter(new DragDistanceConverterEg());
+
+//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT);
+//        getRecyclerRefreshLayout().setRefreshView(new RefreshViewEg(getActivity()), layoutParams);
+
     }
 
     @Override
