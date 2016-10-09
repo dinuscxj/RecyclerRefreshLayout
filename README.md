@@ -23,6 +23,9 @@ progress animation, call `setEnabled(false)` on the `view`.
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutNormal.gif?width=300)
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutFloat.gif?width=300)
 ![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutPinned.gif?width=300)<br/>
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutLoadMore.gif?width=300)
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutLoadNoData.gif?width=300)
+![](https://raw.githubusercontent.com/dinuscxj/RecyclerRefreshLayout/master/Preview/RecyclerRefreshLayoutLoadError.gif?width=300)<br/>
 
 ## Installation
 
@@ -30,7 +33,7 @@ Add the following dependency to your build.gradle file:
 
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:2.0.0'
+        compile 'com.dinuscxj:recyclerrefreshlayout:2.0.1'
     }
 ```
 
