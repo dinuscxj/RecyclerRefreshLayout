@@ -936,23 +936,35 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private int computeAnimateToRefreshingDuration(float from) {
+        Log.i("debug", "from -- refreshing " + from);
+
+        if (from < mRefreshInitialOffset) {
+          return 0;
+        }
+
         switch (mRefreshStyle) {
             case FLOAT:
-                return (int) (Math.max(0.0f, Math.min(1.0f, (from - mRefreshInitialOffset - mRefreshTargetOffset) / mRefreshTargetOffset))
+                return (int) (Math.max(0.0f, Math.min(1.0f, Math.abs(from - mRefreshInitialOffset - mRefreshTargetOffset) / mRefreshTargetOffset))
                         * mAnimateToRefreshDuration);
             default:
-                return (int) (Math.max(0.0f, Math.min(1.0f, (from - mRefreshTargetOffset) / mRefreshTargetOffset))
+                return (int) (Math.max(0.0f, Math.min(1.0f, Math.abs(from - mRefreshTargetOffset) / mRefreshTargetOffset))
                         * mAnimateToRefreshDuration);
         }
     }
 
     private int computeAnimateToStartDuration(float from) {
+        Log.i("debug", "from -- start " + from);
+
+        if (from < mRefreshInitialOffset) {
+          return 0;
+        }
+
         switch (mRefreshStyle) {
             case FLOAT:
-                return (int) (Math.max(0.0f, Math.min(1.0f, (from - mRefreshInitialOffset) / mRefreshTargetOffset))
+                return (int) (Math.max(0.0f, Math.min(1.0f, Math.abs(from - mRefreshInitialOffset) / mRefreshTargetOffset))
                         * mAnimateToStartDuration);
             default:
-                return (int) (Math.max(0.0f, Math.min(1.0f, from / mRefreshTargetOffset))
+                return (int) (Math.max(0.0f, Math.min(1.0f, Math.abs(from) / mRefreshTargetOffset))
                         * mAnimateToStartDuration);
         }
     }
@@ -991,10 +1003,6 @@ public class RecyclerRefreshLayout extends ViewGroup
             }
 
             refreshTargetOffset = mRefreshTargetOffset;
-        }
-
-        if (mRefreshView.getVisibility() != View.VISIBLE) {
-            mRefreshView.setVisibility(View.VISIBLE);
         }
 
         if (!mIsRefreshing) {
@@ -1078,6 +1086,11 @@ public class RecyclerRefreshLayout extends ViewGroup
                 mIRefreshStatus.pullProgress(mTargetOrRefreshViewOffsetY, mTargetOrRefreshViewOffsetY / mRefreshTargetOffset);
                 break;
         }
+
+        if (mRefreshView.getVisibility() != View.VISIBLE) {
+          mRefreshView.setVisibility(View.VISIBLE);
+        }
+
         invalidate();
     }
 

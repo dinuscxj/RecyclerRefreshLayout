@@ -137,6 +137,7 @@ public class RefreshView extends View implements IRefreshStatus {
     @Override
     public void refreshing() {
         mHasTriggeredRefresh = true;
+        mSwipeDegrees = MAX_ARC_DEGREE;
 
         startAnimator();
     }

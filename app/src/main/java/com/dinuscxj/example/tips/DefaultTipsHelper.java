@@ -56,6 +56,14 @@ public class DefaultTipsHelper implements TipsHelper {
             drawable.start();
             return;
         }
+
+//        maybe you like this mode
+//        mRefreshLayout.post(new Runnable() {
+//          @Override
+//          public void run() {
+//            mRefreshLayout.setRefreshing(true);
+//          }
+//        });
     }
 
     @Override
