@@ -212,6 +212,7 @@ public class RecyclerRefreshLayout extends ViewGroup
     @Override
     protected void onDetachedFromWindow() {
         reset();
+        clearAnimation();
         super.onDetachedFromWindow();
     }
 
@@ -685,6 +686,11 @@ public class RecyclerRefreshLayout extends ViewGroup
                 float initialDownY = getMotionEventY(ev, mActivePointerId);
                 if (initialDownY == -1) {
                     return false;
+                }
+
+                // Animation.AnimationListener.onAnimationEnd() can't be ensured to be called
+                if (mAnimateToRefreshingAnimation.hasEnded() && mAnimateToStartAnimation.hasEnded()) {
+                  mIsAnimatingToStart = false;
                 }
 
                 mInitialDownY = initialDownY;
