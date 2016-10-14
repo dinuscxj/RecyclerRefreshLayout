@@ -690,7 +690,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
                 // Animation.AnimationListener.onAnimationEnd() can't be ensured to be called
                 if (mAnimateToRefreshingAnimation.hasEnded() && mAnimateToStartAnimation.hasEnded()) {
-                  mIsAnimatingToStart = false;
+                    mIsAnimatingToStart = false;
                 }
 
                 mInitialDownY = initialDownY;
@@ -945,7 +945,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         Log.i("debug", "from -- refreshing " + from);
 
         if (from < mRefreshInitialOffset) {
-          return 0;
+            return 0;
         }
 
         switch (mRefreshStyle) {
@@ -962,7 +962,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         Log.i("debug", "from -- start " + from);
 
         if (from < mRefreshInitialOffset) {
-          return 0;
+            return 0;
         }
 
         switch (mRefreshStyle) {
@@ -1047,7 +1047,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mInitialMotionY = getMotionEventY(ev, mActivePointerId) - mCurrentTouchOffsetY;
 
-        Log.i("debug", " onDown " + mInitialMotionY );
+        Log.i("debug", " onDown " + mInitialMotionY);
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {
@@ -1061,7 +1061,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mInitialMotionY = getMotionEventY(ev, mActivePointerId) - mCurrentTouchOffsetY;
 
-        Log.i("debug", " onUp " + mInitialMotionY );
+        Log.i("debug", " onUp " + mInitialMotionY);
     }
 
     private void setTargetOrRefreshViewOffsetY(int offsetY) {
@@ -1094,7 +1094,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
 
         if (mRefreshView.getVisibility() != View.VISIBLE) {
-          mRefreshView.setVisibility(View.VISIBLE);
+            mRefreshView.setVisibility(View.VISIBLE);
         }
 
         invalidate();
