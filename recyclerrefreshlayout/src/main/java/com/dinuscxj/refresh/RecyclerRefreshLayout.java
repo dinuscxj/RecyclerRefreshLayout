@@ -1065,6 +1065,10 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void setTargetOrRefreshViewOffsetY(int offsetY) {
+        if (mTarget == null) {
+          return;
+        }
+
         switch (mRefreshStyle) {
             case FLOAT:
                 mRefreshView.offsetTopAndBottom(offsetY);
