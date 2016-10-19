@@ -904,6 +904,8 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private void animateOffsetToStartPosition(int from, Animation.AnimationListener listener) {
+        clearAnimation();
+
         if (computeAnimateToStartDuration(from) <= 0) {
             listener.onAnimationStart(null);
             listener.onAnimationEnd(null);
@@ -917,11 +919,13 @@ public class RecyclerRefreshLayout extends ViewGroup
         if (listener != null) {
             mAnimateToStartAnimation.setAnimationListener(listener);
         }
-        clearAnimation();
+
         startAnimation(mAnimateToStartAnimation);
     }
 
     private void animateToRefreshingPosition(int from, Animation.AnimationListener listener) {
+        clearAnimation();
+
         if (computeAnimateToRefreshingDuration(from) <= 0) {
             listener.onAnimationStart(null);
             listener.onAnimationEnd(null);
@@ -937,7 +941,6 @@ public class RecyclerRefreshLayout extends ViewGroup
             mAnimateToRefreshingAnimation.setAnimationListener(listener);
         }
 
-        clearAnimation();
         startAnimation(mAnimateToRefreshingAnimation);
     }
 
