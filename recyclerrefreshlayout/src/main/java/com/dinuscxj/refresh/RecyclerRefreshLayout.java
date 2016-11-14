@@ -1,7 +1,6 @@
 package com.dinuscxj.refresh;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
@@ -21,8 +20,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
-
-import java.lang.reflect.Field;
 
 /**
  * NOTE: the class based on the {@link android.support.v4.widget.SwipeRefreshLayout} source code
@@ -779,10 +776,12 @@ public class RecyclerRefreshLayout extends ViewGroup
                     mInitialMotionY = activeMoveY;
                     mInitialScrollY = overScrollY;
 
-                    if (IS_DEBUG) Log.i("debug", "animatetostart overscrolly " + overScrollY + " -- " + mInitialMotionY);
+                    if (IS_DEBUG)
+                        Log.i("debug", "animatetostart overscrolly " + overScrollY + " -- " + mInitialMotionY);
                 } else {
                     overScrollY = activeMoveY - mInitialMotionY + mInitialScrollY;
-                    if (IS_DEBUG) Log.i("debug", "overscrolly " + overScrollY + " --" + mInitialMotionY + " -- " + mInitialScrollY);
+                    if (IS_DEBUG)
+                        Log.i("debug", "overscrolly " + overScrollY + " --" + mInitialMotionY + " -- " + mInitialScrollY);
                 }
 
                 if (mIsRefreshing) {
@@ -804,7 +803,8 @@ public class RecyclerRefreshLayout extends ViewGroup
                             mTarget.dispatchTouchEvent(obtain);
                         }
                     }
-                    if (IS_DEBUG) Log.i("debug", "moveSpinner refreshing -- " + mInitialScrollY + " -- " + (activeMoveY - mInitialMotionY));
+                    if (IS_DEBUG)
+                        Log.i("debug", "moveSpinner refreshing -- " + mInitialScrollY + " -- " + (activeMoveY - mInitialMotionY));
                     moveSpinner(overScrollY);
                 } else {
                     if (mIsBeingDragged) {
@@ -1026,8 +1026,9 @@ public class RecyclerRefreshLayout extends ViewGroup
             }
         }
 
-        if (IS_DEBUG) Log.i("debug", targetOrRefreshViewOffsetY + " -- " + refreshTargetOffset + " -- "
-                + convertScrollOffset + " -- " + mTargetOrRefreshViewOffsetY + " -- " + mRefreshTargetOffset);
+        if (IS_DEBUG)
+            Log.i("debug", targetOrRefreshViewOffsetY + " -- " + refreshTargetOffset + " -- "
+                    + convertScrollOffset + " -- " + mTargetOrRefreshViewOffsetY + " -- " + mRefreshTargetOffset);
 
         setTargetOrRefreshViewOffsetY((int) (convertScrollOffset - mTargetOrRefreshViewOffsetY));
     }
@@ -1071,7 +1072,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private void setTargetOrRefreshViewOffsetY(int offsetY) {
         if (mTarget == null) {
-          return;
+            return;
         }
 
         switch (mRefreshStyle) {
