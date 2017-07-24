@@ -2,7 +2,7 @@ package com.dinuscxj.example.demo;
 
 import com.dinuscxj.refresh.IDragDistanceConverter;
 
-public class DragDistanceConverterEg implements IDragDistanceConverter {
+public class HalfDragDistanceConverter implements IDragDistanceConverter {
 
     @Override
     public float convert(float scrollDistance, float refreshDistance) {

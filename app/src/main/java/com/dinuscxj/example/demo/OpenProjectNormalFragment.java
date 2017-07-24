@@ -1,5 +1,6 @@
 package com.dinuscxj.example.demo;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,13 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +29,6 @@ import com.dinuscxj.example.R;
 import com.dinuscxj.example.adapter.RecyclerListAdapter;
 import com.dinuscxj.example.model.OpenProjectFactory;
 import com.dinuscxj.example.model.OpenProjectModel;
-import com.dinuscxj.example.utils.DensityUtil;
-import com.dinuscxj.refresh.RecyclerRefreshLayout;
-import com.dinuscxj.refresh.RefreshView;
 
 public class OpenProjectNormalFragment extends RecyclerFragment<OpenProjectModel> {
     private static final int SIMULATE_UNSPECIFIED = 0;
@@ -91,12 +90,15 @@ public class OpenProjectNormalFragment extends RecyclerFragment<OpenProjectModel
         getOriginAdapter().setItemList(mItemList);
         getHeaderAdapter().notifyDataSetChanged();
 
-        getRecyclerRefreshLayout().setDragDistanceConverter(new DragDistanceConverterEg());
+        getRecyclerRefreshLayout().setDragDistanceConverter(
+            new ResistanceDragDistanceConvert(getScreenHeight(getActivity())));
+    }
 
-//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT);
-//        getRecyclerRefreshLayout().setRefreshView(new RefreshViewEg(getActivity()), layoutParams);
-
+    private static int getScreenHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
     }
 
     @Override

@@ -143,6 +143,11 @@ public class RefreshView extends View implements IRefreshStatus {
     }
 
     @Override
+    public void refreshComplete() {
+
+    }
+
+    @Override
     public void pullToRefresh() {
 
     }

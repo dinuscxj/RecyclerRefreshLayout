@@ -1,7 +1,6 @@
 package com.dinuscxj.refresh;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
@@ -21,8 +20,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
-
-import java.lang.reflect.Field;
 
 /**
  * NOTE: the class based on the {@link android.support.v4.widget.SwipeRefreshLayout} source code
@@ -45,7 +42,7 @@ import java.lang.reflect.Field;
  */
 public class RecyclerRefreshLayout extends ViewGroup
         implements NestedScrollingParent, NestedScrollingChild {
-
+  
     private static final int INVALID_INDEX = -1;
     private static final int INVALID_POINTER = -1;
     //the default height of the RefreshView
@@ -104,11 +101,13 @@ public class RecyclerRefreshLayout extends ViewGroup
 
     private IDragDistanceConverter mDragDistanceConverter;
 
-    private IRefreshStatus mIRefreshStatus;
+    private IRefreshStatus mRefreshStatus;
     private OnRefreshListener mOnRefreshListener;
 
-    private Interpolator mAnimateToStartInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
-    private Interpolator mAnimateToRefreshInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
+    private Interpolator mAnimateToStartInterpolator
+        = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
+    private Interpolator mAnimateToRefreshInterpolator
+        = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
 
     private final Animation mAnimateToRefreshingAnimation = new Animation() {
         @Override
@@ -149,7 +148,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         @Override
         public void onAnimationStart(Animation animation) {
             mIsAnimatingToStart = true;
-            mIRefreshStatus.refreshing();
+            mRefreshStatus.refreshing();
         }
 
         @Override
@@ -172,6 +171,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         @Override
         public void onAnimationStart(Animation animation) {
             mIsAnimatingToStart = true;
+            mRefreshStatus.refreshComplete();
         }
 
         @Override
@@ -221,7 +221,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mCurrentTouchOffsetY = 0.0f;
 
-        mIRefreshStatus.reset();
+        mRefreshStatus.reset();
         mRefreshView.setVisibility(View.GONE);
 
         mIsRefreshing = false;
@@ -243,7 +243,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         mRefreshView = new RefreshView(getContext());
         mRefreshView.setVisibility(View.GONE);
         if (mRefreshView instanceof IRefreshStatus) {
-            mIRefreshStatus = (IRefreshStatus) mRefreshView;
+            mRefreshStatus = (IRefreshStatus) mRefreshView;
         } else {
             throw new ClassCastException("the refreshView must implement the interface IRefreshStatus");
         }
@@ -271,7 +271,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         }
 
         if (refreshView instanceof IRefreshStatus) {
-            mIRefreshStatus = (IRefreshStatus) refreshView;
+            mRefreshStatus = (IRefreshStatus) refreshView;
         } else {
             throw new ClassCastException("the refreshView must implement the interface IRefreshStatus");
         }
@@ -294,6 +294,10 @@ public class RecyclerRefreshLayout extends ViewGroup
      *                                   (the release point) to the start point.
      */
     public void setAnimateToStartInterpolator(Interpolator animateToStartInterpolator) {
+        if (animateToStartInterpolator == null) {
+            return;
+        }
+
         mAnimateToStartInterpolator = animateToStartInterpolator;
     }
 
@@ -302,6 +306,10 @@ public class RecyclerRefreshLayout extends ViewGroup
      *                                     move the refresh view the release point to the refreshing point.
      */
     public void setAnimateToRefreshInterpolator(Interpolator animateToRefreshInterpolator) {
+        if (animateToRefreshInterpolator == null) {
+            return;
+        }
+
         mAnimateToRefreshInterpolator = animateToRefreshInterpolator;
     }
 
@@ -421,7 +429,7 @@ public class RecyclerRefreshLayout extends ViewGroup
                 consumed[1] = dy;
 
             }
-            Log.i("debug", "pre scroll");
+            RefreshLogger.i("pre scroll");
             moveSpinner(mTotalUnconsumed);
         }
 
@@ -467,7 +475,7 @@ public class RecyclerRefreshLayout extends ViewGroup
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
         if (dy < 0) {
             mTotalUnconsumed += Math.abs(dy);
-            Log.i("debug", "nested scroll");
+            RefreshLogger.i("nested scroll");
             moveSpinner(mTotalUnconsumed);
         }
     }
@@ -546,15 +554,49 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         final int width = getMeasuredWidth();
         final int height = getMeasuredHeight();
-        final int childTop = getPaddingTop();
-        final int childLeft = getPaddingLeft();
-        final int childWidth = width - getPaddingLeft() - getPaddingRight();
-        final int childHeight = height - getPaddingTop() - getPaddingBottom();
+        final int targetTop = reviseTargetLayoutTop(getPaddingTop());
+        final int targetLeft = getPaddingLeft();
+        final int targetRight = targetLeft + width - getPaddingLeft() - getPaddingRight();
+        final int targetBottom = targetTop + height - getPaddingTop() - getPaddingBottom();
 
-        mTarget.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
+        try {
+            mTarget.layout(targetLeft, targetTop, targetRight, targetBottom);
+        } catch (Exception ignored) {
+            RefreshLogger.e("error: ignored=" + ignored.toString() + " " + ignored.getStackTrace().toString());
+        }
 
-        mRefreshView.layout((width / 2 - mRefreshView.getMeasuredWidth() / 2), (int) mRefreshInitialOffset,
-                (width / 2 + mRefreshView.getMeasuredWidth() / 2), (int) (mRefreshInitialOffset + mRefreshView.getMeasuredHeight()));
+        int refreshViewLeft = (width - mRefreshView.getMeasuredWidth()) / 2;
+        int refreshViewTop = reviseRefreshViewLayoutTop((int) mRefreshInitialOffset);
+        int refreshViewRight = (width + mRefreshView.getMeasuredWidth()) / 2;
+        int refreshViewBottom = refreshViewTop + mRefreshView.getMeasuredHeight();
+
+        mRefreshView.layout(refreshViewLeft, refreshViewTop, refreshViewRight, refreshViewBottom);
+
+        RefreshLogger.i("onLayout: " + left + " : " + top + " : " + right + " : " + bottom);
+    }
+
+    private int reviseTargetLayoutTop(int layoutTop) {
+        switch (mRefreshStyle) {
+          case FLOAT:
+              return layoutTop;
+          case PINNED:
+              return layoutTop + (int) mTargetOrRefreshViewOffsetY;
+          default:
+              //not consider mRefreshResistanceRate < 1.0f
+              return layoutTop + (int) mTargetOrRefreshViewOffsetY;
+        }
+    }
+
+    private int reviseRefreshViewLayoutTop(int layoutTop) {
+        switch (mRefreshStyle) {
+          case FLOAT:
+              return layoutTop + (int) mTargetOrRefreshViewOffsetY;
+          case PINNED:
+              return layoutTop;
+          default:
+              //not consider mRefreshResistanceRate < 1.0f
+              return layoutTop + (int) mTargetOrRefreshViewOffsetY;
+        }
     }
 
     @Override
@@ -777,10 +819,10 @@ public class RecyclerRefreshLayout extends ViewGroup
                     mInitialMotionY = activeMoveY;
                     mInitialScrollY = overScrollY;
 
-                    Log.i("debug", "animatetostart overscrolly " + overScrollY + " -- " + mInitialMotionY);
+                    RefreshLogger.i("animatetostart overscrolly " + overScrollY + " -- " + mInitialMotionY);
                 } else {
                     overScrollY = activeMoveY - mInitialMotionY + mInitialScrollY;
-                    Log.i("debug", "overscrolly " + overScrollY + " --" + mInitialMotionY + " -- " + mInitialScrollY);
+                    RefreshLogger.i("overscrolly " + overScrollY + " --" + mInitialMotionY + " -- " + mInitialScrollY);
                 }
 
                 if (mIsRefreshing) {
@@ -802,7 +844,7 @@ public class RecyclerRefreshLayout extends ViewGroup
                             mTarget.dispatchTouchEvent(obtain);
                         }
                     }
-                    Log.i("debug", "moveSpinner refreshing -- " + mInitialScrollY + " -- " + (activeMoveY - mInitialMotionY));
+                    RefreshLogger.i("moveSpinner refreshing -- " + mInitialScrollY + " -- " + (activeMoveY - mInitialMotionY));
                     moveSpinner(overScrollY);
                 } else {
                     if (mIsBeingDragged) {
@@ -945,7 +987,7 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private int computeAnimateToRefreshingDuration(float from) {
-        Log.i("debug", "from -- refreshing " + from);
+        RefreshLogger.i("from -- refreshing " + from);
 
         if (from < mRefreshInitialOffset) {
             return 0;
@@ -962,7 +1004,7 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     private int computeAnimateToStartDuration(float from) {
-        Log.i("debug", "from -- start " + from);
+        RefreshLogger.i("from -- start " + from);
 
         if (from < mRefreshInitialOffset) {
             return 0;
@@ -1017,14 +1059,14 @@ public class RecyclerRefreshLayout extends ViewGroup
         if (!mIsRefreshing) {
             if (convertScrollOffset > refreshTargetOffset && !mIsFitRefresh) {
                 mIsFitRefresh = true;
-                mIRefreshStatus.pullToRefresh();
+                mRefreshStatus.pullToRefresh();
             } else if (convertScrollOffset <= refreshTargetOffset && mIsFitRefresh) {
                 mIsFitRefresh = false;
-                mIRefreshStatus.releaseToRefresh();
+                mRefreshStatus.releaseToRefresh();
             }
         }
 
-        Log.i("debug", targetOrRefreshViewOffsetY + " -- " + refreshTargetOffset + " -- "
+        RefreshLogger.i(targetOrRefreshViewOffsetY + " -- " + refreshTargetOffset + " -- "
                 + convertScrollOffset + " -- " + mTargetOrRefreshViewOffsetY + " -- " + mRefreshTargetOffset);
 
         setTargetOrRefreshViewOffsetY((int) (convertScrollOffset - mTargetOrRefreshViewOffsetY));
@@ -1050,7 +1092,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mInitialMotionY = getMotionEventY(ev, mActivePointerId) - mCurrentTouchOffsetY;
 
-        Log.i("debug", " onDown " + mInitialMotionY);
+        RefreshLogger.i(" onDown " + mInitialMotionY);
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {
@@ -1064,7 +1106,7 @@ public class RecyclerRefreshLayout extends ViewGroup
 
         mInitialMotionY = getMotionEventY(ev, mActivePointerId) - mCurrentTouchOffsetY;
 
-        Log.i("debug", " onUp " + mInitialMotionY);
+        RefreshLogger.i(" onUp " + mInitialMotionY);
     }
 
     private void setTargetOrRefreshViewOffsetY(int offsetY) {
@@ -1088,15 +1130,15 @@ public class RecyclerRefreshLayout extends ViewGroup
                 break;
         }
 
-        Log.i("debug", "current offset" + mTargetOrRefreshViewOffsetY);
+        RefreshLogger.i("current offset" + mTargetOrRefreshViewOffsetY);
 
         switch (mRefreshStyle) {
             case FLOAT:
-                mIRefreshStatus.pullProgress(mTargetOrRefreshViewOffsetY,
+                mRefreshStatus.pullProgress(mTargetOrRefreshViewOffsetY,
                         (mTargetOrRefreshViewOffsetY - mRefreshInitialOffset) / mRefreshTargetOffset);
                 break;
             default:
-                mIRefreshStatus.pullProgress(mTargetOrRefreshViewOffsetY, mTargetOrRefreshViewOffsetY / mRefreshTargetOffset);
+                mRefreshStatus.pullProgress(mTargetOrRefreshViewOffsetY, mTargetOrRefreshViewOffsetY / mRefreshTargetOffset);
                 break;
         }
 

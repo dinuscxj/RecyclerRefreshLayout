@@ -16,6 +16,11 @@ public interface IRefreshStatus {
   void refreshing();
 
   /**
+   * refresh has been completed
+   */
+  void refreshComplete();
+
+  /**
    * Refresh View is dropped down to the refresh point
    */
   void pullToRefresh();

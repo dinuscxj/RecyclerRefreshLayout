@@ -15,7 +15,7 @@ import com.dinuscxj.refresh.IRefreshStatus;
 /**
  * the default implementation class of the interface IRefreshStatus, and the class should always be rewritten
  */
-public class RefreshViewEg extends ImageView implements IRefreshStatus {
+public class RefreshViewEg extends android.support.v7.widget.AppCompatImageView implements IRefreshStatus {
     private static final int ANIMATION_DURATION = 150;
     private static final Interpolator ANIMATION_INTERPOLATOR = new DecelerateInterpolator();
 
@@ -29,7 +29,7 @@ public class RefreshViewEg extends ImageView implements IRefreshStatus {
     public RefreshViewEg(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView();
-//        initAnimation();
+        initAnimation();
     }
 
     private void initView() {
@@ -68,11 +68,16 @@ public class RefreshViewEg extends ImageView implements IRefreshStatus {
     }
 
     @Override
+    public void refreshComplete() {
+
+    }
+
+    @Override
     public void pullToRefresh() {
         clearAnimation();
 
         if (getAnimation() == null || getAnimation() == mResetRotateAnimation) {
-//            startAnimation(mRotateAnimation);
+            startAnimation(mRotateAnimation);
         }
     }
 
@@ -81,7 +86,7 @@ public class RefreshViewEg extends ImageView implements IRefreshStatus {
         clearAnimation();
 
         if (getAnimation() == null || getAnimation() == mRotateAnimation) {
-//            startAnimation(mResetRotateAnimation);
+            startAnimation(mResetRotateAnimation);
         }
     }
 
