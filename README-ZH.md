@@ -28,7 +28,7 @@
 
 ```gradle
     dependencies {
-        compile 'com.dinuscxj:recyclerrefreshlayout:2.0.3'
+        compile 'com.dinuscxj:recyclerrefreshlayout:2.0.5'
     }
 ```
 
