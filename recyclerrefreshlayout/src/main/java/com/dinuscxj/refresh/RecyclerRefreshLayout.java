@@ -261,7 +261,11 @@ public class RecyclerRefreshLayout extends ViewGroup
      * @param layoutParams the with is always the match_parent， no matter how you set
      *                     the height you need to set a specific value
      */
-    public void setRefreshView(View refreshView, ViewGroup.LayoutParams layoutParams) {
+    public void setRefreshView(@NonNull View refreshView, ViewGroup.LayoutParams layoutParams) {
+        if (refreshView == null) {
+            throw new NullPointerException("the refreshView can't be null");
+        }
+
         if (mRefreshView == refreshView) {
             return;
         }
@@ -293,9 +297,9 @@ public class RecyclerRefreshLayout extends ViewGroup
      *                                   move the refresh view from the refreshing point or
      *                                   (the release point) to the start point.
      */
-    public void setAnimateToStartInterpolator(Interpolator animateToStartInterpolator) {
+    public void setAnimateToStartInterpolator(@NonNull Interpolator animateToStartInterpolator) {
         if (animateToStartInterpolator == null) {
-            return;
+            throw new NullPointerException("the animateToStartInterpolator can't be null");
         }
 
         mAnimateToStartInterpolator = animateToStartInterpolator;
@@ -305,9 +309,9 @@ public class RecyclerRefreshLayout extends ViewGroup
      * @param animateToRefreshInterpolator The interpolator used by the animation that
      *                                     move the refresh view the release point to the refreshing point.
      */
-    public void setAnimateToRefreshInterpolator(Interpolator animateToRefreshInterpolator) {
+    public void setAnimateToRefreshInterpolator(@NonNull Interpolator animateToRefreshInterpolator) {
         if (animateToRefreshInterpolator == null) {
-            return;
+            throw new NullPointerException("the animateToRefreshInterpolator can't be null");
         }
 
         mAnimateToRefreshInterpolator = animateToRefreshInterpolator;
@@ -393,7 +397,6 @@ public class RecyclerRefreshLayout extends ViewGroup
     }
 
     // NestedScrollingParent
-
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
         switch (mRefreshStyle) {
