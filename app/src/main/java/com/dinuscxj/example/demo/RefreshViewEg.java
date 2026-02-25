@@ -7,7 +7,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.dinuscxj.example.R;
 import com.dinuscxj.refresh.IRefreshStatus;
@@ -15,7 +15,7 @@ import com.dinuscxj.refresh.IRefreshStatus;
 /**
  * the default implementation class of the interface IRefreshStatus, and the class should always be rewritten
  */
-public class RefreshViewEg extends android.support.v7.widget.AppCompatImageView implements IRefreshStatus {
+public class RefreshViewEg extends AppCompatImageView implements IRefreshStatus {
     private static final int ANIMATION_DURATION = 150;
     private static final Interpolator ANIMATION_INTERPOLATOR = new DecelerateInterpolator();
 

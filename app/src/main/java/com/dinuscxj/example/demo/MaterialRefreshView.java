@@ -10,7 +10,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.support.v4.view.ViewCompat;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -95,7 +95,7 @@ public class MaterialRefreshView extends View implements IRefreshStatus {
         } else {
             OvalShape oval = new OvalShadow(mShadowRadius, diameter);
             circle = new ShapeDrawable(oval);
-            ViewCompat.setLayerType(this, ViewCompat.LAYER_TYPE_SOFTWARE, circle.getPaint());
+            ViewCompat.setLayerType(this, View.LAYER_TYPE_SOFTWARE, circle.getPaint());
             circle.getPaint().setShadowLayer(mShadowRadius, shadowXOffset, shadowYOffset,
                     KEY_SHADOW_COLOR);
             final int padding = mShadowRadius;
